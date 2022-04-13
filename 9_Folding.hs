@@ -31,6 +31,14 @@ map f = foldr ((:) . f) []
 -- foldl (\acc elem -> <term>) <start_acc> <list>
 --  ((((0 + 1) + 2) + 3) + 4) + 5
 
+
+-- !!!!!!!!!!!!!!!!!!!!!
+-- DIFFERENCE IN OP OF FOLDR and FOLDL
+-- op in foldr: (\elem acc -> ... )
+-- op in foldl: (\acc elem -> ... )
+
+
+
 -- Folding (Tree)
 
 

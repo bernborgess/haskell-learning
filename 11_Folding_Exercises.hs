@@ -14,14 +14,18 @@ rev = foldl (\acc x -> x : acc) []
 -- * Create a function prefixes that return all the
 -- * prefixes of a given list
 
-prefixes :: [a] -> [[a]]
+--prefixes :: [a] -> [[a]]
 -- prefixes [1,2,3] => [[1],[1,2],[1,2,3]]
 
 -- My try:
 -- prefixes = foldr (\x acc -> acc ++ ((last acc) ++ [x]) ) []
 
-prefixes =
-  foldr (\x acc -> [x]: (map ((:) x) acc)) []
+prefixes :: [a] -> [[a]]
+prefixes=foldr(\el acc->[el]:(map((:)x)acc)) []
+--                                 ^
+--                                 |
+-- usa o operador : para cada lista em acc,
+-- adicionando x ao comeco dela.
 
 
 
@@ -48,6 +52,28 @@ xs
       else
         acc * ((x-xk)/(xj-xk))
   ) 1 xs
+
+
+
+--? Finalmente entendi melhor
+
+-- vector<int> x(k),y(k); // all x[i]!=x[j] if i!=j
+
+-- L(x) = SUM foreach j in (0..k):
+--   y[j] * l(x[j],x)
+
+-- l(xj,x) = PROD foreach m in (0..k) s.t. m!=j:
+--   (x-x[m])/(xj-x[m])
+
+lagrange :: [(Float,Float)] -> Float -> Float
+lagrange paresXY x = foldl (\acc (xj,y)->acc+(y* l xj)) 0 paresXY
+ where
+  l xj = foldl (
+    \acc (xm,_) ->
+      if xj==xm then acc else
+      acc * ((x-xm)/(xj-xm))
+  ) 1 paresXY -- <-- a lista em si mas so primeira coordenada X importa aqui.
+--  ^-- elemento neutro do produto.
 
 
 
