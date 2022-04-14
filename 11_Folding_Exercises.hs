@@ -21,11 +21,11 @@ rev = foldl (\acc x -> x : acc) []
 -- prefixes = foldr (\x acc -> acc ++ ((last acc) ++ [x]) ) []
 
 prefixes :: [a] -> [[a]]
-prefixes=foldr(\el acc->[el]:(map((:)x)acc)) []
+prefixes=foldr(\el acc->[el]:(map((:) el)acc)) []
 --                                 ^
 --                                 |
 -- usa o operador : para cada lista em acc,
--- adicionando x ao comeco dela.
+-- adicionando el ao comeco dela.
 
 
 
@@ -39,23 +39,20 @@ prefixes=foldr(\el acc->[el]:(map((:)x)acc)) []
 --
 -- lj(x) = PROD(0<=m<=k;m!=j){(x-xm)/(xj-xm)}
 
-lagrange :: [(Float,Float)] -> Float -> Float
 
 
-lagrange xs x = foldl (\acc (xj,y) -> acc + (y*l xj)) 0
-xs 
- where
-  l xj = foldl (
-    \acc (xk,_) ->
-      if xj==xk then 
-        acc
-      else
-        acc * ((x-xk)/(xj-xk))
-  ) 1 xs
+-- lagrange :: [(Float,Float)] -> Float -> Float
+-- lagrange xs x = foldl (\acc (xj,y) -> acc + (y* l xj)) 0 xs
+--  where
+--   l xj = foldl (
+--     \acc (xk,_) ->
+--       if xj==xk then acc
+--       else acc * ((x-xk)/(xj-xk))
+--   ) 1 xs
 
 
 
---? Finalmente entendi melhor
+-- ? Finalmente entendi melhor
 
 -- vector<int> x(k),y(k); // all x[i]!=x[j] if i!=j
 
@@ -68,11 +65,8 @@ xs
 lagrange :: [(Float,Float)] -> Float -> Float
 lagrange paresXY x = foldl (\acc (xj,y)->acc+(y* l xj)) 0 paresXY
  where
-  l xj = foldl (
-    \acc (xm,_) ->
-      if xj==xm then acc else
-      acc * ((x-xm)/(xj-xm))
-  ) 1 paresXY -- <-- a lista em si mas so primeira coordenada X importa aqui.
+  l xj = foldl (\acc (xm,_) -> if xj==xm then acc else acc * ((x-xm)/(xj-xm))) 1 paresXY 
+-- <-- a lista em si mas so primeira coordenada X importa aqui.
 --  ^-- elemento neutro do produto.
 
 
