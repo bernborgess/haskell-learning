@@ -1,0 +1,6 @@
+
+# for haskell compiled code
+*.exe
+*.hi
+*.o
+*.out
