@@ -16,12 +16,20 @@ Monitor: Tomaz Gomes Mascarenhas
 input: 3.0
 output: val it = 27.0 : real
 *)
+fun cube x:real = x*x*x;
+
 
 (*
 2. Escreva uma funcao pow : int * int -> int que receba um numero n e um expoente
 e e retorne o valor de ne.
 input: (5, 2);
 output: val it = 25 : int
+*)
+
+(*
+fun pow (_,0) = 1
+  | pow (b,1) = b
+  | pow (b,e) = b * pow (b,e-1);
 *)
 
 (*
@@ -34,10 +42,20 @@ output: val it = [3, 20, 14] : int list
 *)
 
 (*
+
+fun sumLists ([],[]) = []
+  | sumLists (x::xs,y::ys) = (x+y) :: sumLists (xs,ys);
+*)
+
+(*
 4. Escreva uma funcao max: int list -> int que retorne o maior valor de uma lista.
 input: [2, 1, 7, 3]
 output: val it = 7 : int
 *)
+
+fun max [] = 0
+  | max (x::xs) = if x > max xs then x else max xs;
+  
 
 (*
 5. Escreva uma funcao cumSum: int list -> int list que receba uma lista e retorne
@@ -46,6 +64,10 @@ input: [6, 10, 3, 11]
 output: val it = [6, 16, 19, 30] : int list
 *)
 
+fun cumSum [] = []
+  | cumSum (x::xs) = (x :: map (fn y => x+y) (cumSum xs));
+
+
 (*
 6. Escreva uma funcao greet: string -> string que receba um nome e retorne um
 cumprimento para esse nome. Se nenhum nome for passado como entrada, a funcao
@@ -53,6 +75,10 @@ deve retornar Hello nobody.
 input: ”Janis”
 output: val it = ”Hello Janis” : string
 *)
+
+fun greet "" = "Hello nobody"
+  | greet name = "Hello " ^ name;
+
 
 (*
 7. Escreva uma funcao split: string -> string list que receba uma frase f e retorne
