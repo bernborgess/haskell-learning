@@ -26,11 +26,11 @@ input: (5, 2);
 output: val it = 25 : int
 *)
 
-(*
+
 fun pow (_,0) = 1
   | pow (b,1) = b
   | pow (b,e) = b * pow (b,e-1);
-*)
+
 
 (*
 3. Escreva uma funcao sumLists: int list * int list-> int list que receba duas
@@ -41,11 +41,9 @@ input: ([2, 5, 10], [1, 15, 4])
 output: val it = [3, 20, 14] : int list
 *)
 
-(*
-
 fun sumLists ([],[]) = []
   | sumLists (x::xs,y::ys) = (x+y) :: sumLists (xs,ys);
-*)
+
 
 (*
 4. Escreva uma funcao max: int list -> int que retorne o maior valor de uma lista.
@@ -94,6 +92,10 @@ assim.
 input: “Good morning to-you”
 output: val it = [“Good”, “morning”, “to”, “you”] : string list
 *)
+
+fun listOfChars string = explode string;
+
+
 
 (*
 8. Escreva uma funcao allTrue: bool list -> bool que receba uma lista de booleanos
