@@ -93,8 +93,22 @@ input: “Good morning to-you”
 output: val it = [“Good”, “morning”, “to”, “you”] : string list
 *)
 
-fun listOfChars string = explode string;
 
+fun split str = 
+  let 
+    fun sep ch = Char.contains " ,.-" ch
+    fun tokenize [] = []
+      | tokenize [ch] = if sep(ch) then [[]] else [[ch]]
+      | tokenize (s::xs) = 
+      let 
+        val (y::ys) = (tokenize xs) 
+      in
+      if sep(s) then if y = [] then y::ys else []::y::ys 
+      else (s::y) :: ys
+      end
+
+  in  
+  map implode (tokenize (explode str)) end;
 
 
 (*
@@ -105,6 +119,9 @@ output: val it = false : bool
 input: [true, true, true]
 output: val it = true : bool
 *)
+
+fun allTrue x = foldl (op =) true x;
+
 
 (*
 9. Defina um tipo algebrico de dados dinheiro, que possa representar quantidades em
@@ -118,6 +135,13 @@ output: val it = 2 : int
 input: val d = Pessoa Dinheiro(”Gene”, 2.5)) : dinheiro
 output: val it = 250 : int
 *)
+
+datatype dinheiro = Centavos of int | Real of real | Pessoa_Dinheiro of string * real;
+
+fun amount (Real x) = ceil(x*100.0)
+ |  amount (Centavos x) = x
+ |  amount (Pessoa_Dinheiro (s,r)) = ceil(r*100.0);
+
 
 (*
 10. O nosso planeta demora 365 dias para completar uma  ́orbita em torno do sol, n ́os
