@@ -5,9 +5,10 @@ Ciencia da Computacao
 
 Linguagens de Programacao - Haniel Barbosa
 
-Lista de Exerc ́ıcios 1
+Lista de Exercicios 1
 
 Monitor: Tomaz Gomes Mascarenhas
+
 *)
 
 
@@ -52,7 +53,8 @@ output: val it = 7 : int
 *)
 
 fun max [] = 0
-  | max (x::xs) = if x > max xs then x else max xs;
+  | max (x::xs) = let val rest = max xs in 
+    if x > rest then x else rest end;
   
 
 (*
@@ -98,17 +100,16 @@ fun split str =
   let 
     fun sep ch = Char.contains " ,.-" ch
     fun tokenize [] = []
-      | tokenize [ch] = if sep(ch) then [[]] else [[ch]]
-      | tokenize (s::xs) = 
-      let 
-        val (y::ys) = (tokenize xs) 
-      in
-      if sep(s) then if y = [] then y::ys else []::y::ys 
-      else (s::y) :: ys
-      end
-
+      | tokenize (c::cs) =
+        let val ys = (tokenize cs) in
+          if ys=[] then if sep(c) then [] else [[c]] 
+          else if sep(c) 
+            then if (hd ys)=[] then ys else []::ys 
+            else (c::(hd ys))::(tl ys)
+        end
+    val ts = tokenize (explode str)
   in  
-  map implode (tokenize (explode str)) end;
+  map implode (if ts=[] then ts else if (hd ts)=[] then tl ts else ts) end;
 
 
 (*
@@ -120,7 +121,7 @@ input: [true, true, true]
 output: val it = true : bool
 *)
 
-fun allTrue x = foldl (op =) true x;
+fun allTrue x = foldl (fn (x,y) => x andalso y) true x;
 
 
 (*
@@ -136,11 +137,11 @@ input: val d = Pessoa Dinheiro(”Gene”, 2.5)) : dinheiro
 output: val it = 250 : int
 *)
 
-datatype dinheiro = Centavos of int | Real of real | Pessoa_Dinheiro of string * real;
+datatype dinheiro = Centavos of int | Reais of real | Pessoa_Dinheiro of string * real;
 
-fun amount (Real x) = ceil(x*100.0)
+fun amount (Reais x) = round(x*100.0)
  |  amount (Centavos x) = x
- |  amount (Pessoa_Dinheiro (s,r)) = ceil(r*100.0);
+ |  amount (Pessoa_Dinheiro (s,r)) = round(r*100.0);
 
 
 (*
@@ -167,6 +168,18 @@ Urano           30.681
 Netuno          60.190
 *)
 
+datatype Planeta  = Mercurio | Venus | Terra | Marte | Jupiter | Saturno | Urano | Netuno;
+
+fun planetAge (mon : int,pla : Planeta) =
+ case pla of 
+  Mercurio =>	88*(mon div 12)
+  | Venus =>	225*(mon div 12)
+  | Terra =>	365*(mon div 12)
+  | Marte =>	687*(mon div 12)
+  | Jupiter =>	4332*(mon div 12)
+  | Saturno =>	10760*(mon div 12)
+  | Urano =>	30681*(mon div 12)
+  | Netuno =>	60190*(mon div 12);
 
 (*
 11. Considerando a definicao de Binary Search Tree vista na aula sobre tipos de dados
