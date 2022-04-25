@@ -207,46 +207,73 @@ output: val it = 81 : int
 *)
 
 (*
-14. Considere uma linguagem generica com o operador + posssuido associatividade a es-
-querda e que e sobrecarregado para suportar os seguintes tipos:
-• int * real -> real
-• int * int -> int
-• real * int -> real
-• real * real -> real
-Suponha que a vari ́avel i seja do tipo int e a vari ́avel r seja do tipo real. Para cada
-operador + em cada expressao abaixo, diga qual tipo de + e utilizado:
-(a) i+r
-(b) i+r+i
-(c) i+(r+i)
-(d) i+i+r+(r+i)
+1.14
+
+Considere uma linguagem genérica com o operador + possuindo 
+associatividade a esquerda e que é sobrecarregado para 
+suportar os seguintes tipos:
+  • int * real -> real
+  • int * int -> int
+  • real * int -> real
+  • real * real -> real
+Suponha que a variável i seja do tipo int e a variável r seja 
+do tipo real. Para cada operador + em cada expressão abaixo, 
+diga qual tipo de + é utilizado:
+
+(a) i + r => {TIPO 1} 
+(b) i + r + i => {TIPO 1,TIPO 3}
+(c) i + (r + i) => {TIPO 1,TIPO 3}
+(d) i + i + r + (r + i) => {TIPO 2,TIPO 1,TIPO 4,TIPO 3}
+
+
 *)
 
 (*
-15. Explique qual a razao dos erros abaixo ocorrerem em ML:
+1.15
+
+Explique qual a razão dos erros abaixo ocorrerem em ML:
+
 (a) - if 1 < 2 then 1;
-= ;
-= ;
-= ;
-stdIn :5.6 -7.2 Error : syntax error : deleting SEMICOLON
-SEMICOLON SEMICOLON
-*)
+      = ;
+      = ;
+      = ;
 
+erro: stdIn :5.6 -7.2 Error : syntax error : deleting
+         SEMICOLON SEMICOLON
 
-(*
+O erro ocorre pois a expressao em SML e:
+if <cond> then <expr> else <expr> 
+e sempre deve retonar algum valor no else, o que nao ocorre.
+
 (b) - 1 * 2.0;
-stdIn :1.2 -10.2 Error : operator and operand do not agree [
-overload - bad instantiation ]
-operator domain : ’Z [ INT ] * ’Z [ INT ]
-operand : ’Z [ INT ] * real
-in expression :
-1 * 2.0
-*)
+
+erro: stdIn :1.2 -10.2 Error : operator and operand do not agree [
+         overload - bad instantiation ]
+         operator domain : ’Z [ INT ] * ’Z [ INT ]
+         operand :
+         ’Z [ INT ] * real
+         in expression :
+         1 * 2.0
+
+O erro ocorre pois a sintaxe para o - unario em SML
+e com '~', o simbolo '-' e usado apenas na operacao
+binaria de subtracao a' - b'
 
 
-(*
+
 (c) - fun fact n = n * fact (n -1)
-= | fact 0 = 1;
-stdIn :31.1 -39.13 Error : match redundant
-n = > ...
---> 0 = > ...
+     = | fact 0 = 1;
+
+erro: stdIn :31.1 -39.13 Error : match redundant
+         n = > ...
+         -->
+         0 = > ...
+
+O erro ocorre na logica do Pattern Matching,
+onde a expressao mais especifica (0) foi declarada
+depois da mais geral (n) o que esta invertido.
+Alem disso essa e uma recursao que nao atingiria o
+caso base.
+
 *)
+
