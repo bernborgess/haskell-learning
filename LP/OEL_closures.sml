@@ -2,20 +2,21 @@
  OEL : Our Expression Language
 *)
 
+
 datatype expr =
-         IConst of int
-         | BConst of bool
-         | Prim2 of string * expr * expr
-         | Prim1 of string * expr
-         | Ite of expr * expr * expr
-         | Var of string
-         | Let of string * expr * expr
-         (* Declaring functions
-            (f, x, fBody, fDeclEnv)
-         *)
-         | LetFun of string * string * expr * expr
-         (* For evaluating closure values *)
-         | Call of expr * expr;
+  IConst of int
+  | BConst of bool
+  | Prim2 of string * expr * expr
+  | Prim1 of string * expr
+  | Ite of expr * expr * expr
+  | Var of string
+  | Let of string * expr * expr
+  (* Declaring functions
+    (f, x, fBody, fDeclEnv)
+  *)
+  | LetFun of string * string * expr * expr
+  (* For evaluating closure values *)
+  | Call of expr * expr;
 
 
 
@@ -93,24 +94,49 @@ fun eval (e:expr) (st: (string * value) list) : int =
         end
       | _ => raise Match;
 
+fun isIn x s =
+    case s of
+        [] => false
+      | (h::t) => if x = h then true else isIn x t;
+
+fun union s1 s2 =
+    case s1 of
+        [] => s2
+      | (h::t) => if isIn h s2 then union t s2 else union t (h::s2);
+
+fun diff s1 s2 =
+    case s1 of
+        [] => []
+      | (h::t) => if isIn h s2 then diff t s2 else h::(diff t s2);
+
 fun freeVars e : string list =
     case e of
         IConst _ => []
+      | BConst _ =>  []
       | (Var v) => [v]
       | (Prim2(_, e1, e2)) => union (freeVars e1) (freeVars e2)
+      | (Prim1(_, e1)) => freeVars e1
+      | (Ite(c, t, e)) => union (union (freeVars c) (freeVars t)) (freeVars e)
       | (Let(v, e1, e2)) =>
         let val v1 = freeVars e1;
             val v2 = freeVars e2
         in
             union v1 (diff v2 [v]) (* let binds x in e2 but not in e1 *)
         end
+      | (LetFun(f, x, e1, e2)) =>
+        let val v1 = freeVars e1;
+            val v2 = freeVars e2
+        in
+            (* letFun binds f in e2 and x in e1 *)
+            union (diff v1 [x]) (diff v2 [f])
+        end
+      | (Call(Var f, e)) => freeVars e
       | _ => raise Match;
 
-exception NonClosed;
-
 fun closed e = (freeVars e = []);
-closed e1;
-closed e7;
+
+
+exception NonClosed;
 
 
 fun run e =
@@ -122,9 +148,9 @@ fun run e =
 
 (* RODAR ISSO NO SMLNJ  (existe a funcao union?) *)
 
-e0;
+(* e0;
 
-run e0;
+run e0; *)
 
 
 val e2 = Let("a",IConst 5,
@@ -135,8 +161,8 @@ val e2 = Let("a",IConst 5,
         )
     );
 
-closed e2;
-
+(* closed e2; *)
+print "\nRun e2: ";
 run e2;
 (* => 6 ?? *)
 
@@ -146,7 +172,7 @@ run e2;
 
 fun fact n = LetFun("fact","x",
     Ite(Prim2("=",Var"x",IConst 0),
-        ICOnst 1,
+        IConst 1,
         Prim2("*",
             Var "x",
             Call(Var "fact",Prim2("-",Var"x",IConst 1))
@@ -156,6 +182,7 @@ fun fact n = LetFun("fact","x",
     );
 
 
-fact 0;
+(* fact 0; *)
 
-run (fact 0);
+print "\nrun (fact 10): ";
+run (fact 10);
