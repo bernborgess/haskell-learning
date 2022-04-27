@@ -125,3 +125,37 @@ fun run e =
 e0;
 
 run e0;
+
+
+val e2 = Let("a",IConst 5,
+    LetFun("f","x",Prim2("+",Var"x",Var"a"),
+        Let("a", IConst 3,
+            Call(Var"f",IConst 1)
+            )
+        )
+    );
+
+closed e2;
+
+run e2;
+(* => 6 ?? *)
+
+
+
+(* RECURSIVA *)
+
+fun fact n = LetFun("fact","x",
+    Ite(Prim2("=",Var"x",IConst 0),
+        ICOnst 1,
+        Prim2("*",
+            Var "x",
+            Call(Var "fact",Prim2("-",Var"x",IConst 1))
+            )
+        ),
+    Call(Var"fact",IConst n)
+    );
+
+
+fact 0;
+
+run (fact 0);
