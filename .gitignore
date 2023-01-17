@@ -83,5 +83,7 @@ cabal.project.local~
 *.app
 
 # VS CODE
-.vscode
-.swp
+.vscode/
+*.swp
+
+*.wav
