@@ -31,7 +31,11 @@ data State
 
 type Board = Array (Int, Int) Cell
 
-data Game = Game {gameBoard :: Board, gamePlayer :: Player, gameState :: State}
+data Game = Game
+  { gameBoard :: Board
+  , gamePlayer :: Player
+  , gameState :: State
+  }
   deriving (Eq, Show)
 
 n :: Int
@@ -54,10 +58,6 @@ initialGame =
   Game
     { gameBoard =
         array indexRange (zip (range indexRange) (repeat Empty))
-          // [ ((0, 0), Full PlayerX)
-             , ((1, 1), Full PlayerX)
-             , ((2, 2), Full PlayerO)
-             ]
     , gamePlayer = PlayerX
     , gameState = Running
     }

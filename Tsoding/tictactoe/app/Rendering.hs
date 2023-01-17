@@ -21,7 +21,7 @@ boardAsRunningPicture board =
   pictures
     [ color playerXColor $ xCellsOfBoard board
     , color playerOColor $ oCellsOfBoard board
-    , color boardGridColor $ boardGrid
+    , color boardGridColor boardGrid
     ]
 
 outcomeColor :: Maybe Player -> Color
