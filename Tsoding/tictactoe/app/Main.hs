@@ -12,4 +12,4 @@ backgroundColor :: Color
 backgroundColor = makeColor 0 0 0 0
 
 main :: IO ()
-main = play window backgroundColor 30 initialGame gameAsPicture transformGame (\_ -> id)
+main = play window backgroundColor 30 initialGame gameAsPicture transformGame (const id)
