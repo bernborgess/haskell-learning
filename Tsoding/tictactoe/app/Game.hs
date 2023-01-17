@@ -5,11 +5,11 @@ module Game
     cellWidth,
     cellHeight,
     initialGame,
-    Player (PlayerX, PlayerO),
-    Cell (Empty, Full),
-    State (Running, GameOver),
+    Player (..),
+    Cell (..),
+    State (..),
     Board,
-    Game (gameBoard, gamePlayer, gameState),
+    Game (..),
   )
 where
 
