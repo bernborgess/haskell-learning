@@ -81,3 +81,7 @@ cabal.project.local~
 *.exe
 *.out
 *.app
+
+# VS CODE
+.vscode
+.swp
