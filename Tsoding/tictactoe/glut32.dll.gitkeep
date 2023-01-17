@@ -1,0 +1,4 @@
+You need the glut32.dll in this folder.
+Get it at https://www.transmissionzero.co.uk/files/software/development/GLUT/freeglut-MSVC.zip , 
+unzip it and rename the freeglut.dll file to glut32.dll 
+(get the one in x64 folder, if you are in 64 bit architecture)
