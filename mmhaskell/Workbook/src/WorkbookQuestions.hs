@@ -1,33 +1,53 @@
 module WorkbookQuestions where
 
+import Control.Applicative ((<**>))
+import Control.Arrow ((&&&))
 import qualified Data.Map as M
 
 evens :: [a] -> [a]
-evens = error "evens not implemented"
+evens (_ : x : xs) = x : evens xs
+evens _ = []
 
 addWhenMod3Is2 :: [Int] -> [Int]
-addWhenMod3Is2 = error "addWhenMod3Is2 not implemented"
+addWhenMod3Is2 = map (+ 3) . filter ((== 2) . flip mod 3)
 
 reverse_ :: [a] -> [a]
-reverse_ = error "reverse_ not implemented"
+reverse_ [] = []
+reverse_ (x : xs) = reverse_ xs ++ [x]
 
 reverseAccum :: [a] -> [a]
-reverseAccum = error "reverseAccum not implemented"
+reverseAccum = help []
+ where
+  help :: [a] -> [a] -> [a]
+  help acc [] = acc
+  help acc (x : xs) = help (x : acc) xs
 
+-- ? (<**>) :: Applicative f => f a -> f (a -> b) -> f b
+-- ? base Control.Applicative GHC.Base
+-- ? A variant of <*> with the arguments reversed.
 specialMultiples :: [Int] -> [Int]
-specialMultiples = error "specialMultiples not implemented"
+specialMultiples = flip (<**>) [(* 2), (* 3), (* 4)]
 
+infixr 9 .:
+(.:) :: (c -> d) -> (a -> b -> c) -> (a -> b -> d)
+(.:) = (.) . (.)
+{-# INLINE (.:) #-}
 manyStrings :: [Int] -> [String] -> [String]
-manyStrings = error "manyStrings not implemented"
+manyStrings = concat .: zipWith replicate
+
+pairs :: [a] -> [(a, a)]
+pairs [] = []
+pairs xs = zip xs (tail xs)
 
 addPairs :: [Int] -> [Int]
-addPairs = error "addPairs not implemented"
+addPairs (x : y : xs) = (x + y) : addPairs xs
+addPairs _ = []
 
 listToMap :: [Int] -> M.Map String Int
-listToMap = error "listToMap not implemented"
+listToMap = M.fromList . map (show &&& id)
 
 sumWithParity :: [Int] -> Int
-sumWithParity = error "sumWithParity not implemented" 
+sumWithParity = error "sumWithParity not implemented"
 
 jumpingStairs :: [Int] -> [(String, Int)] -> ([String], [String])
 jumpingStairs = error "jumpingStairs not implemented"
