@@ -11,16 +11,16 @@ main =
   defaultMain $
     testGroup
       "Workbook Tests"
-      [ -- evensTests
-        -- , addWhenMod3Is2Tests
-        -- ,reverseTests
-        -- ,reverseAccumTests
-        -- ,specialMultiplesTests
-        -- , manyStringsTests
-        -- ,addPairsTests
-        listToMapTests
-        -- , sumWithParityTests
-        -- , jumpingStairsTests
+      [ evensTests
+      , addWhenMod3Is2Tests
+      , reverseTests
+      , reverseAccumTests
+      , specialMultiplesTests
+      , manyStringsTests
+      , addPairsTests
+      , listToMapTests
+      , sumWithParityTests
+      , jumpingStairsTests
       ]
 
 testEvens :: (Eq a, Show a) => Int -> [a] -> [a] -> TestTree

@@ -2,6 +2,7 @@ module WorkbookQuestions where
 
 import Control.Applicative ((<**>))
 import Control.Arrow ((&&&))
+import Data.Bool
 import qualified Data.Map as M
 
 evens :: [a] -> [a]
@@ -47,7 +48,18 @@ listToMap :: [Int] -> M.Map String Int
 listToMap = M.fromList . map (show &&& id)
 
 sumWithParity :: [Int] -> Int
-sumWithParity = error "sumWithParity not implemented"
+sumWithParity = help False
+ where
+  help :: Bool -> [Int] -> Int
+  help b (x : xs) = bool 3 2 b * x + help (not b) xs
+  help _ [] = 0
 
 jumpingStairs :: [Int] -> [(String, Int)] -> ([String], [String])
-jumpingStairs = error "jumpingStairs not implemented"
+jumpingStairs = help ([], [])
+ where
+  help :: ([String], [String]) -> [Int] -> [(String, Int)] -> ([String], [String])
+  help (c, n) (j : js) ((s, h) : hs) =
+    if j < h
+      then help (c, n) js ((s, h) : hs)
+      else help (s : c, n) (j - h : js) hs
+  help (c, n) _ hs = (reverse c, reverse n ++ map fst hs)
