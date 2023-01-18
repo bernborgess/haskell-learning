@@ -23,6 +23,18 @@ reverseAccum = help []
   help acc [] = acc
   help acc (x : xs) = help (x : acc) xs
 
+insanity :: [a] -> [a]
+insanity = crazy []
+ where
+  crazy :: [a] -> [a] -> [a]
+  crazy = foldl (flip (:))
+
+-- foldl :: ([a] -> a -> [a]) -> [a] -> [a] -> [a]
+-- (:) :: a -> [a] -> [a]
+-- flip :: forall a b c. (a -> b -> c) -> b -> a -> c
+-- flip (:) :: (a -> [a] -> [a]) -> ([a] -> a -> [a])
+-- fold (flip (:)) :: [a] -> [a] -> [a]
+
 -- ? (<**>) :: Applicative f => f a -> f (a -> b) -> f b
 -- ? base Control.Applicative GHC.Base
 -- ? A variant of <*> with the arguments reversed.
@@ -55,9 +67,9 @@ sumWithParity = help False
   help _ [] = 0
 
 jumpingStairs :: [Int] -> [(String, Int)] -> ([String], [String])
-jumpingStairs (j : js) ((s, h) : hs) =
+jumpingStairs (j : js) r@((s, h) : hs) =
   if j < h
-    then jumpingStairs js ((s, h) : hs)
+    then jumpingStairs js r
     else let (c, n) = jumpingStairs (j - h : js) hs in (s : c, n)
 jumpingStairs _ hs = ([], map fst hs)
 
