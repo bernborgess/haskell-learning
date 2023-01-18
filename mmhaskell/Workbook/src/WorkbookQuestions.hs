@@ -55,6 +55,14 @@ sumWithParity = help False
   help _ [] = 0
 
 jumpingStairs :: [Int] -> [(String, Int)] -> ([String], [String])
+jumpingStairs (j : js) ((s, h) : hs) =
+  if j < h
+    then jumpingStairs js ((s, h) : hs)
+    else let (c, n) = jumpingStairs (j - h : js) hs in (s : c, n)
+jumpingStairs _ hs = ([], map fst hs)
+
+{-
+jumpingStairs :: [Int] -> [(String, Int)] -> ([String], [String])
 jumpingStairs = help ([], [])
  where
   help :: ([String], [String]) -> [Int] -> [(String, Int)] -> ([String], [String])
@@ -63,3 +71,4 @@ jumpingStairs = help ([], [])
       then help (c, n) js ((s, h) : hs)
       else help (s : c, n) (j - h : js) hs
   help (c, n) _ hs = (reverse c, reverse n ++ map fst hs)
+-}
