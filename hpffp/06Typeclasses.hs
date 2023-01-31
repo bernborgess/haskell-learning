@@ -1,3 +1,5 @@
+import Data.List
+
 {-
 class Show a where
   showsPrec :: Int -> a -> ShowS
@@ -142,3 +144,52 @@ instance Show Nomen where
   show (Nomen gen Gen Sin) = "des"
   show (Nomen Neu kas Sin) = "das"
   show (Nomen Man Akk Sin) = "den"
+
+-- Match the types
+-- We're going to give you two types and their implementation
+-- Then we're going to ask you if you can substitute the
+-- second type for the first. You can test this by typing
+-- the first declaration and its type into a file and editing
+-- in the new one, loading to see if it fails. Don't just guess,
+-- test all your answers
+i :: Num a => a
+-- i :: a
+i = 1
+
+-- f :: Float
+-- ! f :: Num a => a
+f :: Fractional a => a
+f = 1.0
+
+-- g :: Float
+g :: RealFrac a => a
+g = 1.0
+
+freud :: a -> a
+-- freud :: Ord a => a -> a
+freud x = x
+
+freud' :: a -> a
+freud' x = x
+
+myX = 1 :: Int
+sigmund :: Int -> Int
+-- ! sigmund :: a -> a
+sigmund x = myX
+
+jung :: Ord a => [a] -> a
+jung = minimum
+
+-- Type-Kwon-Do
+-- Round Two! Same rules apply - you're trying to fill
+-- in terms (code) whcih'll fit the type. The idea with
+-- these exercises is that you'll derive the implementation
+-- from the type information. You'll probably need to use
+-- stuff from Prelude
+-- 1
+chk :: Eq b => (a -> b) -> a -> b -> Bool
+chk f a b = f a == b
+
+-- 2
+arith :: Num b => (a -> b) -> Integer -> a -> b
+arith f i a = f a * fromIntegral i
