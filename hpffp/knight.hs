@@ -1,12 +1,27 @@
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.State
-
+import System.Process (system)
 
 data Direction = N | S | E | W | Quit
   deriving (Read, Show)
 
-type KnightState = (Int, Int)
+data Weapon = None | Knife | Sword | Bow
+
+instance Show Weapon where
+  show None = "x"
+  show Knife = "(=-"
+  show Sword = "|=="
+  show Bow = ")->"
+
+type KnightPosition = (Int, Int)
+
+data GameState = GameState
+  { knightPosition :: KnightPosition,
+    knightMoney :: Int,
+    knightWeapon :: Weapon
+  }
+  deriving (Show)
 
 parseDirection :: String -> Direction
 parseDirection s = case s of
@@ -14,9 +29,9 @@ parseDirection s = case s of
   "S" -> S
   "E" -> E
   "W" -> W
-  "Q" -> Quit
+  _ -> Quit
 
-moveKnight :: Direction -> KnightState -> KnightState
+moveKnight :: Direction -> KnightPosition -> KnightPosition
 moveKnight d (x, y) = case d of
   N -> (x, y + 1)
   S -> (x, y - 1)
@@ -24,31 +39,56 @@ moveKnight d (x, y) = case d of
   W -> (x - 1, y)
   Quit -> (x, y)
 
-isMonster :: KnightState -> Bool
+isMonster :: KnightPosition -> Bool
 isMonster (x, y) = (6 * x + 7 * y - x * x) `mod` 23 == 0
 
-runGame :: StateT KnightState IO ()
+showTile :: GameState -> KnightPosition -> Char
+showTile state (x, y)
+  | knightPosition state == (x, y) = 'H'
+  | isMonster (x, y) = 'M'
+  | otherwise = ' '
+
+runGame :: StateT GameState IO ()
 runGame = do
   state <- get
+  liftIO $ putStrLn $ replicate 20 '-'
   liftIO $ putStr "Enter a direction: "
   directionStr <- liftIO getLine
+  liftIO $ system "clear"
   let direction = parseDirection directionStr
-  let newState = moveKnight direction state
-  let monster = isMonster newState
+  let newPosition = moveKnight direction $ knightPosition state
+  let hasMonster = isMonster newPosition
+  let newState =
+        state
+          { knightPosition = newPosition,
+            knightMoney = knightMoney state + if hasMonster then 5 else 0
+          }
+
   put newState
 
-  when monster $
+  when hasMonster $
     liftIO $
       putStrLn "Monster Appeared!"
+
+  let (x, y) = knightPosition newState
+  let grid = [[showTile newState (i, j) | i <- [0 .. 9]] | j <- [9, 8 .. 0]]
+  liftIO $ mapM_ putStrLn grid
 
   case direction of
     Quit -> return ()
     _ -> do
-      liftIO $ putStrLn $ "Knight is at " ++ show newState
+      liftIO $
+        putStrLn $
+          "Knight is at "
+            ++ show newPosition
+            ++ ", carrying "
+            ++ show (knightMoney newState)
+            ++ " gold pieces, and wielding "
+            ++ show (knightWeapon newState)
       runGame
 
 main :: IO ()
 main = do
   putStrLn "Starting game..."
-  evalStateT runGame (0, 0)
+  evalStateT runGame $ GameState (0, 0) 0 None
   putStrLn "Game over."
