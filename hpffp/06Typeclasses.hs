@@ -188,8 +188,10 @@ jung = minimum
 -- stuff from Prelude
 -- 1
 chk :: Eq b => (a -> b) -> a -> b -> Bool
-chk f a b = f a == b
+-- chk f a b = f a == b
+chk = ((==) .)
 
 -- 2
 arith :: Num b => (a -> b) -> Integer -> a -> b
-arith f i a = f a * fromIntegral i
+-- arith f i a = f a * fromIntegral i
+arith = (. fromIntegral) . flip . ((*) .)
