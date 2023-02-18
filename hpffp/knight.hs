@@ -2,7 +2,6 @@ import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.State
 
--- import System.Random
 
 data Direction = N | S | E | W | Quit
   deriving (Read, Show)
@@ -25,6 +24,9 @@ moveKnight d (x, y) = case d of
   W -> (x - 1, y)
   Quit -> (x, y)
 
+isMonster :: KnightState -> Bool
+isMonster (x, y) = (6 * x + 7 * y - x * x) `mod` 23 == 0
+
 runGame :: StateT KnightState IO ()
 runGame = do
   state <- get
@@ -32,10 +34,13 @@ runGame = do
   directionStr <- liftIO getLine
   let direction = parseDirection directionStr
   let newState = moveKnight direction state
+  let monster = isMonster newState
   put newState
-  -- rand <- liftIO $ randomIO :: StateT KnightState IO Double
-  let rand = 0.1
-  when (rand < 0.2) $ liftIO $ putStrLn "Monster appeared"
+
+  when monster $
+    liftIO $
+      putStrLn "Monster Appeared!"
+
   case direction of
     Quit -> return ()
     _ -> do
