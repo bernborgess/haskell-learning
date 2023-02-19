@@ -1,6 +1,7 @@
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.State
+import System.IO (BufferMode (NoBuffering), hSetBuffering, stdin)
 import System.Process (system)
 
 data Direction = N | S | E | W | Quit
@@ -89,6 +90,7 @@ runGame = do
 
 main :: IO ()
 main = do
+  hSetBuffering stdin NoBuffering
   putStrLn "Starting game..."
   evalStateT runGame $ GameState (0, 0) 0 None
   putStrLn "Game over."
