@@ -189,3 +189,22 @@ multiples3 = length . filter1
 -- ["brown","dog","was","goof"]
 noArticles :: String -> [String]
 noArticles = filter (`notElem` ["the", "a", "an"]) . words
+
+-- ======================================================
+-- Zipping exercises
+-- 1. Write your own version of zip :: [a] -> [b] -> [(a, b)]
+-- and ensure it behaves the same as the original.
+myZip :: [a] -> [b] -> [(a, b)]
+myZip [] _ = []
+myZip _ [] = []
+myZip (a : as) (b : bs) = (a, b) : myZip as bs
+
+-- 2. Do what you did for zip, but now for
+myZipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+myZipWith _ [] _ = []
+myZipWith _ _ [] = []
+myZipWith f (a : as) (b : bs) = f a b : myZipWith f as bs
+
+-- 3. Rewrite your zip in terms of the zipWith you wrote.
+myZip' :: [a] -> [b] -> [(a, b)]
+myZip' = myZipWith (,)
