@@ -167,3 +167,25 @@ l10 = take 3 $ filter odd [1, 3, undefined]
 7. (_, 'b')
   => 2
 -}
+
+-- =================================================
+-- 9.10 Filtering lists of values
+-- 1. Given the above, how might we write a filter function that would
+-- give us all the multiples of 3 out of a list from 1-30?
+filter1 :: [Int] -> [Int]
+-- filter1 xs = filter (\x -> x `mod` 3 == 0) xs
+filter1 = filter $ (0 ==) . (`mod` 3)
+
+-- 2. Recalling what we learned about function composition, how
+-- could we compose the above function with the length function
+-- to tell us *how many* multiples of 3 there are between 1 and 30?
+multiples3 :: [Int] -> Int
+multiples3 = length . filter1
+
+-- 3. Next we’re going to work on removing all articles (’the’, ’a’, and
+-- ’an’) from sentences. You want to get to something that works
+-- like this:
+-- Prelude> myFilter "the brown dog was a goof"
+-- ["brown","dog","was","goof"]
+noArticles :: String -> [String]
+noArticles = filter (`notElem` ["the", "a", "an"]) . words
