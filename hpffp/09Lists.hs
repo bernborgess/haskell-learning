@@ -98,3 +98,72 @@ myWords' = mySplitOn ' '
 
 myLines' :: String -> [String]
 myLines' = mySplitOn '\n'
+
+-- ========================================================
+-- ON LAZINESS AND STRICTNESS
+-- 1.
+l1 = [x ^ y | x <- [1 .. 5], y <- [2, undefined]]
+
+-- fine
+-- take 1 $ [x^y | x <- [1..5], y <- [2, undefined]]
+
+-- blows up
+-- i3 = sum [1, undefined, 3]
+
+-- fine
+l4 = length [1, 2, undefined]
+
+-- blows up (spine is undefined)
+l5 = length $ [1, 2, 3] ++ undefined
+
+-- fine
+l6 = take 1 $ filter even [1, 2, 3, undefined]
+
+-- blows up (whole list is evaluated)
+l7 = take 1 $ filter even [1, 3, undefined]
+
+-- fine
+l8 = take 1 $ filter odd [1, 3, undefined]
+
+-- fine
+l9 = take 2 $ filter odd [1, 3, undefined]
+
+-- blows up
+l10 = take 3 $ filter odd [1, 3, undefined]
+
+-- ? Is it in normal form?
+-- For each expression, determine whether it's in:
+-- 1. Normal Form, which implies weak head normal form
+-- 2. Weak head normal form only; or
+-- 3. neither.
+
+-- ! Values in Haskell get reduced to weak head normal
+-- ! form by default. By ‘normal form’ we mean that the
+-- ! expression is fully evaluated. ‘
+
+-- ! ‘Weak head normal form’ means the expression is
+-- ! only evaluated as far as is necessary to reach a
+-- ! data constructor.
+
+{-
+ Remember that an expression cannot be in normal form or weak
+ head normal form if the outermost part of the expression isn’t a data
+ constructor. It can’t be in normal form if any part of the expression is
+ unevaluated
+-}
+{-
+1. [1, 2, 3, 4, 5]
+  => 1
+2. 1 : 2 : 3 : 4 : _
+  => 2
+3. enumFromTo 1 10
+  => 3
+4. length [1, 2, 3, 4, 5]
+  => 3
+5. sum (enumFromTo 1 10)
+  => 3
+6. ['a'..'m'] ++ ['n'..'z']
+  => 3
+7. (_, 'b')
+  => 2
+-}
