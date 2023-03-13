@@ -266,3 +266,74 @@ capHead (x : xs) = toUpper x
 -- for fun, rewrite it pointfree.
 capHead' :: String -> Char
 capHead' = toUpper . head
+
+-- 9.10
+-- filtering values
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' _ [] = []
+filter' pred (x : xs)
+  | pred x = x : filter' pred xs
+  | otherwise = filter' pred xs
+
+-- filter (\x -> elem x "aeiou") "abracadabre"
+-- [x | x <- "abracadabre", elem x "aeiou"]
+
+-- Intermission: Exercises
+-- 1. Given the above, how might we write a
+-- filter function that would give us all the
+-- multiples of 3 out of a list from 1-30?
+filterMult3 :: [Int] -> [Int]
+-- filterMult3 = filter (\x -> x `mod` 3 == 0)
+filterMult3 = filter ((== 0) . flip mod 3)
+
+-- 2. Recalling what we learned about function
+-- composition, how could we compose the above
+-- function with the length function to tell us
+-- how many multiples of 3 there are between
+-- 1 and 30?
+countMult3 :: [Int] -> Int
+countMult3 = length . filterMult3
+
+-- 3. Next we’re going to work on removing all
+-- articles (’the’, ’a’, and’an’) from sentences.
+-- You want to get to something that works like this:
+-- Prelude> myFilter "the brown dog was a goof"
+-- ["brown","dog","was","goof"]
+filterArticles :: String -> [String]
+-- filterArticles s = filter isntArticle (words s)
+--   where
+--     isntArticle x = x `notElem` ["the", "a", "an"]
+filterArticles = filter (`notElem` ["the", "a", "an"]) . words
+
+-- 9.11 Zipping lists
+-- Zipping exercises
+-- 1. Write your own version of
+zip' :: [a] -> [b] -> [(a, b)]
+-- and ensure it behaves the same as the original
+zip' [] _ = []
+zip' _ [] = []
+zip' (a : as) (b : bs) = (a, b) : zip' as bs
+
+-- 2. Do what you did for zip, but now for
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' f as bs = map (uncurry f) $ zip' as bs
+
+-- 3. Rewrite your zip in terms of the zipWith
+--  you wrote.
+zip'' :: [a] -> [b] -> [(a, b)]
+zip'' = zipWith' (,)
+
+-- 9.12 Chapter Exercises
+-- Data.Char
+-- 1. Query the types of isUpper and toUpper
+-- isUpper :: Char -> Bool         -- Defined in `GHC.Unicode'
+-- toUpper :: Char -> Char         -- Defined in `GHC.Unicode'
+
+-- 2. Given the following behaviors, which would we use to write
+-- a function that filters all the uppercase letters out of a String?
+-- Write that function such that, given the input “HbEfLrLxO,” your
+-- function will return “HELLO.”
+-- Prelude Data.Char> isUpper 'J'
+-- True
+-- Prelude Data.Char> toUpper 'j'
+-- 'J'
