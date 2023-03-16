@@ -337,3 +337,33 @@ zip'' = zipWith' (,)
 -- True
 -- Prelude Data.Char> toUpper 'j'
 -- 'J'
+filterUpper :: String -> String
+filterUpper = filter isUpper
+
+-- 3. Write a function that will capitalize the first letter of
+-- a String and return the entire String. For example, if given
+-- the argument “julie,” it will return “Julie.”
+capitalize :: String -> String
+capitalize "" = ""
+capitalize (x : xs) = toUpper x : xs
+
+-- 4. Now make a new version of that function that is recursive such
+-- that if you give it the input “woot” it will holler back at you
+-- “WOOT.” The type signature won’t change, but you will want to
+-- add a base case.
+uppercase :: String -> String
+uppercase "" = ""
+uppercase (x : xs) = toUpper x : uppercase xs
+
+-- 5. To do the final exercise in this section, we’ll need another
+-- standard function for lists called head. Query the type of head and
+-- experiment with it to see what it does. Now write a function that
+-- will capitalize the first letter of a String and return only that letter
+-- as the result.
+-- ? head :: [a] -> a
+bighead :: String -> Char
+bighead = toUpper . head
+
+-- 6. Cool. Good work. Now rewrite it as a composed function. Then,
+-- for fun, rewrite it pointfree.
+-- done it first try
