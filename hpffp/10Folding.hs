@@ -158,4 +158,34 @@ fibs2 = takeWhile (< 100) fibs
 -- it through a take function or similar.
 facts = scanl (*) 1 [1 ..]
 
--- fibs = 1 : scanl (+) 1 fibs
+-- WARM UP AND REVIEW
+-- 1. Given the following sets of consonants and vowels:
+-- a) Write a function that takes inputs from stops and
+-- vowels and makes 3-tuples of all possible stop-vowel-stop
+-- combinations. These will not all correspond to real words
+-- in English, although the stop-vowel-stop pattern is common
+-- enough that many of them will.
+newtype SvsComb = S (Char, Char, Char)
+
+instance Show SvsComb where
+  show (S (a, b, c)) = a : b : c : ""
+
+svs :: [SvsComb] =
+  let stops = "pbtdkg"
+      vowels = "aeiou"
+   in [S (s1, v, s2) | s1 <- stops, v <- vowels, s2 <- stops]
+
+svsP :: [SvsComb] = filter beginP svs
+  where
+    beginP :: SvsComb -> Bool
+    beginP (S (p, _, _)) = p == 'p'
+
+newtype NvnComb = N (String, String, String)
+
+instance Show NvnComb where
+  show (N (a, b, c)) = a ++ " " ++ b ++ " " ++ c ++ "\n"
+
+nvn :: [NvnComb] =
+  let nouns = ["boy", "food", "tree", "boat", "girl"]
+      verbs = ["eats", "likes", "sees"]
+   in [N (n1, v, n2) | n1 <- nouns, v <- verbs, n2 <- nouns]
