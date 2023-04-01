@@ -367,3 +367,68 @@ bighead = toUpper . head
 -- 6. Cool. Good work. Now rewrite it as a composed function. Then,
 -- for fun, rewrite it pointfree.
 -- done it first try
+
+-- Writing your own standard functions
+-- 3. After you write the recursive myElem, write
+-- another version that uses any.
+myElem :: Eq a => a -> [a] -> Bool
+myElem _ [] = False
+myElem e (x : xs) = e == x || myElem e xs
+
+myElem' :: Eq a => a -> [a] -> Bool
+myElem' e = any (== e)
+
+-- 4. Implement myReverse
+myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse (x : xs) = myReverse xs ++ [x]
+
+-- 5. squish flattens a list of lists into a list
+squish :: [[a]] -> [a]
+squish [] = []
+squish (l : ls) = l ++ squish ls
+
+-- squish ls = foldr (++) [] ls
+
+-- 6. squishMap maps a function over a list and
+-- concatenates the results.
+squishMap :: (a -> [b]) -> [a] -> [b]
+squishMap = (squish .) . map
+
+-- squishMap f = squish . map f
+
+squishAgain :: [[a]] -> [a]
+squishAgain = squishMap id
+
+-- 8. MaximumBy takes a comparison function and a
+-- list and returns the greatest element of the
+-- list based on the last value that the comparison
+-- returned GT for.
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy _ [] = error "empty list has no max"
+myMaximumBy _ [x] = x
+myMaximumBy f (x : y : xs) = myMaximumBy f (g : xs)
+  where
+    g = if f x y == GT then x else y
+
+-- 9. myMinimumBy takes a comparison function and a list
+-- and returns the least element of the list based on
+-- the last value that the comparison returned LT for.
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy _ [] = error "empty list has no min"
+myMinimumBy _ [x] = x
+myMinimumBy f (x : y : xs) = myMinimumBy f (m : xs)
+  where
+    m = if f x y == LT then x else y
+
+-- Using the myMinimumBy and myMaximumBy functions,
+-- write your own versions of maximum and minimum.
+-- If you have GHC 7.10 or newer, you’ll see a type
+-- constructor that wants a Foldable instance instead
+-- of a list as has been the case for many functions
+-- so far
+myMaximum :: (Ord a) => [a] -> a
+myMaximum = myMaximumBy compare
+
+myMinimum :: (Ord a) => [a] -> a
+myMinimum = myMinimumBy compare
