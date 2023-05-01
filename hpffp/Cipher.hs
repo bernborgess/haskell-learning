@@ -1,5 +1,6 @@
 module Cipher where
 
+import Data.List
 import Data.Char
 
 -- A Caesar cipher is a simple substitution cipher, in which each letter
@@ -45,3 +46,60 @@ caesar k = map (cipher k)
 
 unCaesar :: Int -> String -> String
 unCaesar k = caesar (26 - k)
+
+
+
+
+-- Vigenere
+--  Vigenère cipher is another substitution cipher, based on a Caesar cipher, but it
+-- uses a series of Caesar ciphers for polyalphabetic substitution. The
+-- substitution for each letter in the plaintext is determined by a fixed
+-- keyword.
+--    MEET AT DAWN
+-- +  ALLY AL LYAL
+-- => MPPR AE OYWY
+
+
+vigenere :: String -> String -> String
+vigenere key msg = foldl' cipher ("",0) msg
+  where
+    n = length key
+    cipher :: (String,Int) -> Char -> (String,Int)
+    cipher (acs,ai) ch = (acs++nc,(ai+1)`mod`n)
+      where
+        base = if isUpper c then ord 'A' else ord 'a'
+        c0 = ord c - base
+        k0 = ord key!!ai - base
+        nc = chr $ (c0 + k0) `mod` 26 + base
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
