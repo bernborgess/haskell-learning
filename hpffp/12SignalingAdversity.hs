@@ -1,3 +1,4 @@
+import Data.Bool
 import Data.Char
 
 -- # Signaling adversity
@@ -67,3 +68,80 @@ mkPerson'' name age = agg (nameOkay name) (ageOkay age)
 -- SPOILER
 -- mkPerson :: Name -> Age -> Validation [PersonInvalid] Person
 -- mkPerson name age = liftA2 Person (nameOkay name) (ageOkay age)
+
+-- String processing
+-- Because this is the kind of thing linguist co-authors enjoy doing in
+-- their spare time.
+-- ? 1. Write a recursive function that takes a text/string, breaks it into
+-- ? words and replaces each instance of ”the” with ”a”. It’s intended
+-- ? only to replace exactly the word “the”.
+-- example GHCi session above the functions
+-- >>> notThe "the"
+-- Nothing
+-- >>> notThe "blahtheblah"
+-- Just "blahtheblah"
+-- >>> notThe "woot"
+-- Just "woot"
+notThe :: String -> Maybe String
+notThe s = if s == "the" then Nothing else Just s
+
+-- >>> replaceThe "the cow loves us"
+-- "a cow loves us"
+replaceThe :: String -> String
+replaceThe s = unwords ans
+  where
+    ws = words s
+    ms = map notThe ws
+    noToA :: Maybe String -> String
+    noToA (Just s) = s
+    noToA Nothing = "a"
+
+    ans = map noToA ms
+
+-- 2. Write a recursive function that takes a
+-- text/string, breaks it into
+-- words, and counts the number of instances of
+-- ”the” followed by
+-- a vowel-initial word.
+-- >>> countTheBeforeVowel "the cow"
+-- 0
+-- >>> countTheBeforeVowel "the evil cow"
+-- 1
+countTheBeforeVowel :: String -> Integer
+countTheBeforeVowel s = go $ words s
+  where
+    isVowel :: Char -> Bool
+    isVowel c = c `elem` "aeiou"
+
+    go :: [String] -> Integer
+    go [] = 0
+    go [x] = 0
+    go (x : y : xs) = pls + go (y : xs)
+      where
+        pls = if x == "the" && isVowel (head y) then 1 else 0
+
+gptCountTheBeforeVowel :: String -> Integer
+gptCountTheBeforeVowel s = go (words s)
+  where
+    go :: [String] -> Integer
+    go [] = 0
+    go [_] = 0
+    go ("the" : y : xs) = go (y : xs) + bool 0 1 (isVowel $ head y)
+    go (_ : xs) = go xs
+
+    isVowel :: Char -> Bool
+    isVowel c = c `elem` "aeiou"
+
+-- 3. Return the number of letters that are vowels in a word.
+-- Hint: it’s helpful to break this into steps. Add any helper functions necessary to achieve your objectives.
+-- a) Test for vowelhood
+-- b) Return the vowels of a string
+-- c) Count the number of elements returned
+-- >>> countVowels "the cow"
+-- 2
+-- >>> countVowels "Mikolajczak"
+-- 4
+countVowels :: String -> Integer
+countVowels = fromIntegral . length . filter isVowel
+  where
+    isVowel c = toLower c `elem` "aeiou"
