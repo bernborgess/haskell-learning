@@ -245,3 +245,52 @@ flipMaybe (Just a : mas) =
   case flipMaybe mas of
     Nothing -> Nothing
     Just as -> Just $ a : as
+
+-- Small library for Either
+-- Write each of the following functions. If more than one possible
+-- unique function exists for the type, use common sense to determine
+-- what it should do.
+-- 1. Try to eventually arrive at a solution that uses foldr, even if earlier
+-- versions don’t use foldr.
+lefts' :: [Either a b] -> [a]
+lefts' = foldr fn []
+  where
+    fn :: Either a b -> [a] -> [a]
+    fn (Left a) as = a : as
+    fn (Right b) as = as
+
+-- 2. Same as the last one. Use foldr eventually.
+rights' :: [Either a b] -> [b]
+rights' = lefts' . map flipEither
+  where
+    flipEither :: Either a b -> Either b a
+    flipEither (Left a) = Right a
+    flipEither (Right b) = Left b
+
+-- 3.
+partitionEithers' :: [Either a b] -> ([a], [b])
+partitionEithers' [] = ([], [])
+partitionEithers' (eab : eabs) =
+  let (ras, rbs) = partitionEithers' eabs
+   in case eab of
+        Left a -> (a : ras, rbs)
+        Right b -> (ras, b : rbs)
+
+-- 4.
+eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe' _ (Left a) = Nothing
+eitherMaybe' f (Right b) = Just $ f b
+
+-- 5. This is a general catamorphism for Either values.
+either' :: (a -> c) -> (b -> c) -> Either a b -> c
+either' fac _ (Left a) = fac a
+either' _ fbc (Right b) = fbc b
+
+-- 6. Same as before, but use the either' function you just wrote.
+eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe'' f = either' (const Nothing) (Just . f)
+
+-- Most of the functions you just saw are in the Prelude, Data.Maybe,
+-- or Data.Either but you should strive to write them yourself without
+-- looking at existing implementations. You will deprive yourself if you
+-- cheat
