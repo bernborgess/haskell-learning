@@ -174,3 +174,74 @@ integerToNat i
   where
     i2n 0 = Zero
     i2n n = Succ (i2n (n - 1))
+
+{-
+Small library for Maybe
+Write the following functions. This may take some time.
+-}
+-- 1. Simple boolean checks for Maybe values.
+isJust :: Maybe a -> Bool
+isJust (Just x) = True
+isJust Nothing = False
+
+-- 2. The following is the Maybe catamorphism.
+-- You can turn a Maybe
+-- value into anything else with this.
+mayybee :: b -> (a -> b) -> Maybe a -> b
+mayybee b _ Nothing = b
+mayybee _ f (Just a) = f a
+
+-- 3. In case you just want to provide a fallback value.
+-- >>> fromMaybe 0 Nothing
+-- 0
+-- >>> fromMaybe 0 (Just 1)
+-- 1
+fromMaybe :: a -> Maybe a -> a
+fromMaybe a = mayybee a id
+
+-- 4. Converting between List and Maybe.
+-- >>> listToMaybe [1, 2, 3]
+-- Just 1
+-- >>> listToMaybe []
+-- Nothing
+listToMaybe :: [a] -> Maybe a
+listToMaybe [] = Nothing
+listToMaybe (x : _) = Just x
+
+-- >>> maybeToList (Just 1)
+-- [1]
+-- >>> maybeToList Nothing
+-- []
+maybeToList :: Maybe a -> [a]
+maybeToList Nothing = []
+maybeToList (Just x) = [x]
+
+-- 5. For when we just want to drop the Nothing
+-- values from our list.
+-- >>> catMaybes [Just 1, Nothing, Just 2]
+-- [1, 2]
+-- >>> catMaybes [Nothing, Nothing, Nothing]
+-- []
+catMaybes :: [Maybe a] -> [a]
+catMaybes = foldr fn []
+  where
+    fn :: Maybe a -> [a] -> [a]
+    fn Nothing as = as
+    fn (Just a) as = a : as
+
+-- catMaybes mas = map fromJust $ filter isJust mas
+--   where
+--     fromJust (Just x) = x
+
+-- 6. You’ll see this called “sequence” later.
+-- >>> flipMaybe [Just 1, Just 2, Just 3]
+-- Just [1, 2, 3]
+-- >>> flipMaybe [Just 1, Nothing, Just 3]
+-- Nothing
+flipMaybe :: [Maybe a] -> Maybe [a]
+flipMaybe [] = Just []
+flipMaybe (Nothing : mas) = Nothing
+flipMaybe (Just a : mas) =
+  case flipMaybe mas of
+    Nothing -> Nothing
+    Just as -> Just $ a : as
