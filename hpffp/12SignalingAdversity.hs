@@ -294,3 +294,87 @@ eitherMaybe'' f = either' (const Nothing) (Just . f)
 -- or Data.Either but you should strive to write them yourself without
 -- looking at existing implementations. You will deprive yourself if you
 -- cheat
+
+-- ? Unfolds
+-- While the idea of catamorphisms is still relatively
+-- fresh in our minds,
+-- let’s turn our attention to their dual: anamorphisms.
+--  If folds, or catamorphisms, let us break data
+--  structures down then unfolds let us build
+-- them up. There are, just as with folds, a few
+-- different ways to unfold
+-- a data structure. We can use them to create finite
+-- and infinite data
+-- structures alike.
+
+-- iterate is like a very limited unfold that never ends
+-- iterate :: (a -> a) -> a -> [a]
+
+-- unfoldr is the full monty
+-- unfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+
+-- ex: take 10 $ unfoldr (\b -> Just (b,b+1)) 0
+-- ==> [0,1,2,3,4,5,6,7,8,9]
+
+-- Write your own iterate and unfoldr
+
+-- 1. Write the function myIterate using direct recursion.
+-- Compare the behavior with the built-in iterate to
+-- gauge correctness. Do not look at the source or any
+-- examples of iterate so that you are forced to do this
+-- yourself.
+myIterate :: (a -> a) -> a -> [a]
+myIterate f a = a : myIterate f (f a)
+
+-- 2. Write the function myUnfoldr using direct
+-- recursion. Compare with the built-in unfoldr to
+-- check your implementation. Again, don’t look at
+-- implementations of unfoldr so that you figure it
+-- out yourself.
+myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+myUnfoldr f b = case f b of
+  Just (a', b') -> a' : myUnfoldr f b'
+  Nothing -> []
+
+-- 3. Rewrite myIterate into betterIterate using
+-- myUnfoldr. A hint – we used unfoldr to produce
+-- the same results as iterate earlier. Do this with
+-- different functions and see if you can abstract the
+-- structure out.
+-- It helps to have the types in front of you
+-- myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+betterIterate :: (a -> a) -> a -> [a]
+betterIterate f = myUnfoldr (\x -> Just (x, f x))
+
+-- Remember, your betterIterate should have the same
+-- results as iterate.
+-- Prelude> take 10 $ iterate (+1) 0
+-- [0,1,2,3,4,5,6,7,8,9]
+-- Prelude> take 10 $ betterIterate (+1) 0
+
+-- Finally something other than a list!
+-- Given the BinaryTree from last chapter, complete
+-- the following exercises. Here’s that datatype again:
+data BinaryTree a
+  = Leaf
+  | Node (BinaryTree a) a (BinaryTree a)
+  deriving (Eq, Ord, Show)
+
+-- 1. Write unfold for BinaryTree.
+unfold :: (a -> Maybe (a, b, a)) -> a -> BinaryTree b
+unfold f a = case f a of
+  Just (a', b', a'') -> Node (unfold f a') b' (unfold f a'')
+  Nothing -> Leaf
+
+-- 2. Make a tree builder.
+-- Using the unfold function you’ve just made for
+-- BinaryTree, write the following function:
+treeBuild :: Integer -> BinaryTree Integer
+treeBuild 0 = Leaf
+treeBuild n = go 0 n
+  where
+    go :: Integer -> Integer -> BinaryTree Integer
+    go i n =
+      if i >= n
+        then Leaf
+        else Node (go (i + 1) n) i (go (i + 1) n)
