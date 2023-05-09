@@ -1,0 +1,30 @@
+cabal-version:      2.4
+name:               cabal-demo
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license:
+author:             bernborgess
+maintainer:         bernborgess@outlook.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+executable cabal-demo
+    main-is:          Main.hs
+    import:           warnings
+    build-depends:    base ^>=4.16.4.0
+                    , haskell-say ^>=1.0.0.0
+    hs-source-dirs:   app
+    default-language: Haskell2010
