@@ -90,7 +90,7 @@ handleGuess puzzle guess = do
        ) of
     (_, True) -> do
       putStrLn $
-        show (ColorString Green "YAY")
+        show (ColorString Red "!")
           ++ "You already guessed that\
              \ character, pick something else!"
       return puzzle
@@ -145,7 +145,7 @@ main = do
 -- You may have noticed when you were playing with the hangman
 -- game, that there are some weird things about its game logic:
 
--- [ ] although it can play with words up to 9 characters long, you only
+-- [X] although it can play with words up to 9 characters long, you only
 -- get to guess 7 characters;
 -- [ ] it ends the game after 7 guesses, whether they were correct or
 -- incorrect;
