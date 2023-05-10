@@ -2,11 +2,25 @@ module Main where
 
 import Control.Monad (forever, when)
 import Data.Char (toLower)
-import Data.List (intersperse)
+import Data.List (intersperse, sort)
 import Data.Maybe (isJust)
 import System.Exit (exitSuccess)
 import System.Random (randomRIO)
 
+-- STYLING THE GAME
+data Color = Red | Green | Reset
+
+instance Show Color where
+  show Green = "\ESC[0;32m"
+  show Red = "\ESC[0;31m"
+  show Reset = "\ESC[0;0m"
+
+data ColorString = ColorString Color String
+
+instance Show ColorString where
+  show (ColorString c s) = show c ++ s ++ show Reset
+
+-- DEALING WITH WORDLIST
 newtype WordList
   = WordList [String]
   deriving (Eq, Show)
@@ -46,7 +60,7 @@ instance Show Puzzle where
   show (Puzzle _ discovered guessed) =
     intersperse ' ' (renderPuzzleChar <$> discovered)
       ++ " Guessed so far: "
-      ++ guessed
+      ++ sort guessed
 
 freshPuzzle :: String -> Puzzle
 freshPuzzle s = Puzzle s (Nothing <$ s) []
@@ -75,9 +89,10 @@ handleGuess puzzle guess = do
          alreadyGuessed puzzle guess
        ) of
     (_, True) -> do
-      putStrLn
-        "You already guessed that\
-        \ character, pick something else!"
+      putStrLn $
+        show (ColorString Green "YAY")
+          ++ "You already guessed that\
+             \ character, pick something else!"
       return puzzle
     (True, _) -> do
       putStrLn
@@ -92,10 +107,13 @@ handleGuess puzzle guess = do
 
 gameOver :: Puzzle -> IO ()
 gameOver (Puzzle wordToGuess _ guessed) =
-  when (length guessed > 7) $ do
+  when (wrongs wordToGuess guessed > length wordToGuess) $ do
     putStrLn "You Lose!"
     putStrLn $ "The word was : " ++ wordToGuess
     exitSuccess
+  where
+    wrongs :: String -> String -> Int
+    wrongs s g = length $ filter (`notElem` s) g
 
 gameWin :: Puzzle -> IO ()
 gameWin (Puzzle _ filledInSoFar _) =
