@@ -4,6 +4,7 @@ import Control.Monad (forever, when)
 import Data.Char (toLower)
 import Data.List (intersperse, sort)
 import Data.Maybe (isJust)
+import System.Console.ANSI (clearScreen, setCursorPosition)
 import System.Exit (exitSuccess)
 import System.Random (randomRIO)
 
@@ -90,19 +91,19 @@ handleGuess puzzle guess = do
        ) of
     (_, True) -> do
       putStrLn $
-        show (ColorString Red "!")
+        show (ColorString Red "! ")
           ++ "You already guessed that\
              \ character, pick something else!"
       return puzzle
     (True, _) -> do
-      putStrLn
-        "This character was in the word,\
-        \ filling in the word accordingly"
+      putStrLn $
+        show (ColorString Green "YAY ")
+          ++ "This character was in the word!"
       return (fillInCharacter puzzle guess)
     (False, _) -> do
-      putStrLn
-        "This character wasn't in the word,\
-        \ filling in the word accordingly"
+      putStrLn $
+        show (ColorString Red "X ")
+          ++ "This character wasn't in the word."
       return (fillInCharacter puzzle guess)
 
 gameOver :: Puzzle -> IO ()
@@ -127,13 +128,15 @@ runGame puzzle = forever $ do
   gameWin puzzle
   putStrLn $ "Current puzzle is: " ++ show puzzle
   putStr "Guess a letter: "
+  clearScreen
+  setCursorPosition 0 0
   guess <- getLine
   case guess of
     [c] -> handleGuess puzzle c >>= runGame
     _ ->
       putStrLn
         "Your guess must\
-        \ b a single character"
+        \ be a single character"
 
 main :: IO ()
 main = do
@@ -147,9 +150,9 @@ main = do
 
 -- [X] although it can play with words up to 9 characters long, you only
 -- get to guess 7 characters;
--- [ ] it ends the game after 7 guesses, whether they were correct or
+-- [X] it ends the game after 7 guesses, whether they were correct or
 -- incorrect;
--- [ ] if your 7th guess supplies the last letter in the word, it may still
+-- [X] if your 7th guess supplies the last letter in the word, it may still
 -- tell you you lost;
 -- [ ] it picks some very strange words that you didn’t suspect were
 -- even in the dictionary.
