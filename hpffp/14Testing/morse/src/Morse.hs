@@ -14,20 +14,58 @@ import qualified Data.Map as M
 
 type Morse = String
 
-charToMorse :: M.Map Int String
-charToMorse = M.fromList [(5, "a"), (3, "b"), (5, "c")]
+charToMorse :: Char -> Maybe Morse
+charToMorse = flip M.lookup letterToMorse
 
-morseToChar :: ()
-morseToChar = undefined
+morseToChar :: Morse -> Maybe Char
+morseToChar = flip M.lookup morseToLetter
 
-stringToMorse :: ()
-stringToMorse = undefined
+stringToMorse :: String -> Maybe [Morse]
+stringToMorse = mapM charToMorse
 
-letterToMorse :: ()
-letterToMorse = undefined
+letterToMorse :: (M.Map Char Morse)
+letterToMorse =
+  M.fromList
+    [ ('a', ".-"),
+      ('b', "-..."),
+      ('c', "-.-."),
+      ('d', "-.."),
+      ('e', "."),
+      ('f', "..-."),
+      ('g', "--."),
+      ('h', "...."),
+      ('i', ".."),
+      ('j', ".---"),
+      ('k', "-.-"),
+      ('l', ".-.."),
+      ('m', "--"),
+      ('n', "-."),
+      ('o', "---"),
+      ('p', ".--."),
+      ('q', "--.-"),
+      ('r', ".-."),
+      ('s', "..."),
+      ('t', "-"),
+      ('u', "..-"),
+      ('v', "...-"),
+      ('w', ".--"),
+      ('x', "-..-"),
+      ('y', "-.--"),
+      ('z', "--.."),
+      ('1', ".----"),
+      ('2', "..---"),
+      ('3', "...--"),
+      ('4', "....-"),
+      ('5', "....."),
+      ('6', "-...."),
+      ('7', "--..."),
+      ('8', "---.."),
+      ('9', "----."),
+      ('0', "-----")
+    ]
 
-morseToLetter :: ()
-morseToLetter = undefined
+morseToLetter :: M.Map Morse Char
+morseToLetter = M.foldrWithKey (flip M.insert) M.empty letterToMorse
 
 hello :: IO ()
 hello = putStrLn "Hello!"
