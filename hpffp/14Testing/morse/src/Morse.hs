@@ -5,8 +5,6 @@ module Morse
     stringToMorse,
     letterToMorse,
     morseToLetter,
-    -- REMOVE
-    hello,
   )
 where
 
@@ -66,6 +64,3 @@ letterToMorse =
 
 morseToLetter :: M.Map Morse Char
 morseToLetter = M.foldrWithKey (flip M.insert) M.empty letterToMorse
-
-hello :: IO ()
-hello = putStrLn "Hello!"
