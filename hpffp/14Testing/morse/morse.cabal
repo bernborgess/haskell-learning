@@ -18,10 +18,12 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  MyLib
+    exposed-modules:  Morse
     -- other-modules:
     -- other-extensions:
     build-depends:    base ^>=4.16.4.0
+                    , containers
+                    , QuickCheck
     hs-source-dirs:   src
     default-language: Haskell2010
 
@@ -30,9 +32,21 @@ executable morse
     main-is:          Main.hs
     -- other-modules:
     -- other-extensions:
-    build-depends:
-        base ^>=4.16.4.0,
-        morse
-
+    build-depends:    base ^>=4.16.4.0
+                    , containers
+                    , morse
+                    , QuickCheck
     hs-source-dirs:   app
     default-language: Haskell2010
+
+test-suite tests
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    main-is:          tests.hs
+    hs-source-dirs:   tests
+    build-depends:    base
+                    , containers
+                    , morse
+                    , QuickCheck
+    default-language: Haskell2010
+
