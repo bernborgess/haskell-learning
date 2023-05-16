@@ -1,10 +1,7 @@
 module Main where
 
 import Control.Monad (forever, when)
-import Morse
-  ( morseToChar,
-    stringToMorse,
-  )
+import Morse (morseToChar, stringToMorse)
 import System.Environment (getArgs)
 import System.Exit (exitFailure, exitSuccess)
 import System.IO (isEOF)
