@@ -1,11 +1,12 @@
-module Hangmann
-  ( randomWord,
-    freshPuzzle,
-    runGame,
-    fillInCharacter,
-    handleGuess,
-  )
-where
+module Hangmann where
+
+-- ( randomWord,
+--   freshPuzzle,
+--   runGame,
+--   fillInCharacter,
+--   handleGuess,
+--   Puzzle,
+-- )
 
 import Control.Monad (forever, when)
 import Data.List (intersperse, sort)
@@ -62,6 +63,7 @@ randomWord = gameWords >>= randomWord'
 
 -- MAKING A PUZZLE
 data Puzzle = Puzzle String [Maybe Char] [Char]
+  deriving (Eq)
 
 instance Show Puzzle where
   show (Puzzle _ discovered guessed) =
