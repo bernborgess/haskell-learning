@@ -118,6 +118,21 @@ f1 x =
   capitalizeWord x == twice capitalizeWord x
     && capitalizeWord x == fourTimes capitalizeWord x
 
+-- 2.
 f2 x =
   sort x == twice sort x
     && sort x == fourTimes sort x
+
+-- Make a Gen random generator for the datatype
+-- 1. Equal probabilities for each.
+data Fool
+  = Fulse
+  | Frue
+  deriving (Eq, Show)
+
+genFoolEq :: Gen Fool
+genFoolEq = elements [Fulse, Frue]
+
+-- 2/3s chance of Fulse, 1/3 chance of Frue
+genFoolThird :: Gen Fool
+genFoolThird = elements [Fulse, Fulse, Frue]
