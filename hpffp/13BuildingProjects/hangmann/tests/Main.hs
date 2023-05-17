@@ -25,7 +25,7 @@ main = hspec $ do
     it "should increment guesses" $ do
       let puz = H.freshPuzzle "something"
       -- fetch arbitrary char
-      (ch : _) <- sample' charGen
+      ch <- generate $ elements ['a' .. 'z']
 
       -- run handleGuess on freshpuzzle
       npz <- H.handleGuess puz ch
