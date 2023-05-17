@@ -21,12 +21,38 @@ maintainer:         bernborgess@outlook.com
 category: Game
 extra-source-files: CHANGELOG.md
 
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    exposed-modules:  Hangmann
+    build-depends:    base ^>=4.16.4.0
+                    , random ^>=1.0.0
+                    , ansi-terminal 
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
 executable hangmann
+    import:           warnings
     main-is:          Main.hs
     hs-source-dirs:   app
     build-depends:    base ^>=4.16.4.0
                     , random ^>=1.0.0
                     , ansi-terminal 
+                    , hangmann
 
     default-language: Haskell2010
-    
+
+test-suite tests
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    main-is:          Main.hs
+    hs-source-dirs:   tests
+    build-depends:    base ^>=4.16.4.0
+                    , QuickCheck
+                    , hangmann
+                    , hspec
+    default-language: Haskell2010
+   
