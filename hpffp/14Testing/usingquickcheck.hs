@@ -1,3 +1,4 @@
+import Data.Char (toUpper)
 import Data.List (sort)
 import Test.QuickCheck
 
@@ -87,3 +88,36 @@ prop_lengthTake n xs = length (take n xs) == n
 prop_readShow x = read (show x) == x
 
 -- quickCheck (prop_readShow::String->Bool)
+
+-- Failure
+-- Find out why this property fails.
+square x = x * x
+
+squareIdentity = square . sqrt
+
+prop_squareIdentity d =
+  d > 0 ==> d === squareIdentity d
+
+-- quickCheck prop_squareIdentity
+
+-- *** Failed! Falsified (after 2 tests and 5 shrinks):
+
+-- 0.2
+-- 0.2 /= 0.19999999999999998
+
+-- Idempotence
+twice f = f . f
+
+fourTimes = twice . twice
+
+capitalizeWord :: String -> String
+capitalizeWord = map toUpper
+
+-- 1.
+f1 x =
+  capitalizeWord x == twice capitalizeWord x
+    && capitalizeWord x == fourTimes capitalizeWord x
+
+f2 x =
+  sort x == twice sort x
+    && sort x == fourTimes sort x
