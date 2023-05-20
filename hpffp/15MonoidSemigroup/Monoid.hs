@@ -121,3 +121,29 @@ idOne xs = map (* 1) xs == xs
 
 -- The problem of orphan instances
 -- ./orphan
+
+-- Madness
+type Verb = String
+
+type Adjective = String
+
+type Adverb = String
+
+type Noun = String
+
+type Exclamation = String
+
+madlib :: Exclamation -> Adverb -> Noun -> Adjective -> String
+madlib e adv noun adj =
+  mconcat
+    [ e,
+      "! He said ",
+      adv,
+      " as he jumped into his convertible ",
+      noun,
+      " and drove off with his ",
+      adj,
+      " wife."
+    ]
+
+myans = madlib "Ouch" "fast" "donut" "sick"
