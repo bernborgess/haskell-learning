@@ -147,3 +147,6 @@ madlib e adv noun adj =
     ]
 
 myans = madlib "Ouch" "fast" "donut" "sick"
+
+-- Better living through QuickCheck
+-- -> betterCheck.hs
