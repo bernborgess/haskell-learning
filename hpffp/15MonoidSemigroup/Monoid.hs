@@ -6,6 +6,7 @@
 {-# HLINT ignore "Use fold" #-}
 
 import Data.Monoid
+import Test.QuickCheck
 
 {-
 class Monoid m where
@@ -150,3 +151,33 @@ myans = madlib "Ouch" "fast" "donut" "sick"
 
 -- Better living through QuickCheck
 -- -> betterCheck.hs
+
+-- Monoid exercises
+
+monoidAssoc :: (Eq m, Monoid m) => m -> m -> m -> Bool
+monoidAssoc a b c = (a <> (b <> c)) == ((a <> b) <> c)
+
+-- Quickchecking left and right identity
+monoidLeftIdentity :: (Eq m, Monoid m) => m -> Bool
+monoidLeftIdentity a = (mempty <> a) == a
+
+monoidRightIdentity :: (Eq m, Monoid m) => m -> Bool
+monoidRightIdentity a = (a <> mempty) == a
+
+data Trivial = Trivial deriving (Eq, Show)
+
+instance Semigroup Trivial where
+  (<>) = undefined
+
+instance Monoid Trivial where
+  mempty = undefined
+  mappend = (<>)
+
+instance Arbitrary Trivial where
+  arbitrary = return Trivial
+
+main :: IO ()
+main = do
+  quickCheck (\(x :: Trivial) -> monoidAssoc x)
+  quickCheck (monoidLeftIdentity :: Trivial -> Bool)
+  quickCheck (monoidRightIdentity :: Trivial -> Bool)
