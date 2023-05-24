@@ -176,8 +176,64 @@ instance Monoid Trivial where
 instance Arbitrary Trivial where
   arbitrary = return Trivial
 
-main :: IO ()
+-- * 2.
+
+newtype Identity a = Identity a deriving (Show)
+
+instance Semigroup a => Semigroup (Identity a) where
+  (Identity a) <> (Identity a') = Identity $ a <> a'
+
+instance Monoid a => Monoid (Identity a) where
+  mempty = Identity mempty
+
+-- * 3.
+
+data Two a b = Two a b deriving (Show)
+
+instance (Semigroup a, Semigroup b) => Semigroup (Two a b) where
+  (Two a b) <> (Two a' b') = Two (a <> a') (b <> b')
+
+instance (Monoid a, Monoid b) => Monoid (Two a b) where
+  mempty = Two mempty mempty
+
+-- 8. This next exercise will involve doing something that will feel
+-- a bit unnatural still and you may find it difficult. If you get it
+-- and you haven’t done much FP or Haskell before, get yourself a
+-- nice beverage. We’re going to toss you the instance declaration
+-- so you don’t churn on a missing Monoid constraint you didn’t
+-- know you needed.
+newtype Mem s a = Mem {runMem :: s -> (a, s)}
+
+instance Semigroup a => Semigroup (Mem s a) where
+  (Mem f1) <> (Mem f2) = Mem $ \s ->
+    let (a1, s1) = f1 s
+        (a2, s2) = f2 s1
+     in (a1 <> a2, s2)
+
+instance Monoid a => Monoid (Mem s a) where
+  mempty = Mem (mempty,)
+
+-- Given the following code:
+f' = Mem $ \s -> ("hi", s + 1)
+
 main = do
-  quickCheck (\(x :: Trivial) -> monoidAssoc x)
-  quickCheck (monoidLeftIdentity :: Trivial -> Bool)
-  quickCheck (monoidRightIdentity :: Trivial -> Bool)
+  print $ runMem (f' <> mempty) 0
+  print $ runMem (mempty <> f') 0
+  print $ (runMem mempty 0 :: (String, Int))
+  print $ runMem (f' <> mempty) 0 == runMem f' 0
+  print $ runMem (mempty <> f') 0 == runMem f' 0
+
+-- A correct Monoid for Mem should, given the above code, get the
+-- following output:
+-- Prelude> main
+-- ("hi",1)
+-- ("hi",1)
+-- ("",0)
+-- True
+-- True
+
+-- main :: IO ()
+-- main = do
+--   quickCheck (\(x :: Trivial) -> monoidAssoc x)
+--   quickCheck (monoidLeftIdentity :: Trivial -> Bool)
+--   quickCheck (monoidRightIdentity :: Trivial -> Bool)
