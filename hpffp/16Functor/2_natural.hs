@@ -72,9 +72,7 @@ antihalve (x : l, y : r) = x : y : xs
   where
     xs = antihalve (l, r)
 antihalve (x, []) = x
-antihalve ([], y) = y ++ y
-antihalve ([], []) = []
-antihalve idk = throw (ArgsIdk idk)
+antihalve ([], y) = y
 
 listToTree :: Nat [] Tree
 listToTree [] = Leaf
@@ -96,12 +94,29 @@ treeToList (Node tl h tr) = h : t
 prop :: [Int] -> Bool
 prop xs = (treeToList . listToTree) xs == xs
 
-prop2 :: Tree Int -> Property
-prop2 tr = (listToTree . treeToList) tr === tr
+instance Foldable Tree where
+  foldr :: (a -> b -> b) -> b -> Tree a -> b
+  foldr _ acc Leaf = acc
+  foldr f acc (Node tl e tr) = fr
+    where
+      na = f e acc
+      fl = foldr f na tl
+      fr = foldr f fl tr
 
--- Node (Node (Node Leaf 1 Leaf) (-2) (Node Leaf 0 Leaf)) 1 Leaf Node (Node (Node Leaf 0 Leaf) (-2) Leaf) 1 (Node Leaf 1 Leaf)
--- Node (Node (Node Leaf 1 Leaf) (-2) (Node Leaf 0 Leaf)) 1 Leaf
+prop2 :: Tree Int -> Property
+prop2 tr =
+  length tr
+    <= 3
+    ==> (listToTree . treeToList) tr
+    === tr
+
 ch = verboseCheck prop2
 
--- Node Leaf 8 (Node Leaf 5 (Node (Node Leaf (-5) Leaf) 6 Leaf)) Node (Node (Node (Node Leaf 6 Leaf) (-5) Leaf) 5 (Node (Node Leaf 6 Leaf) (-5) Leaf)) 8 (Node (Node (Node Leaf (-5) Leaf) 6 Leaf) 6 (Node (Node Leaf (-5) Leaf) 5 Leaf))
--- Node Leaf 8 (Node Leaf 5 (Node (Node Leaf (-5) Leaf) 6 Leaf))
+tre :: (Num a, Eq a) => a -> a -> Tree a
+tre 0 a = Node Leaf a Leaf
+tre n a = Node (r $ 2 * a) a (r $ 2 * a + 1)
+  where
+    r = tre (n - 1)
+
+t :: Tree Int
+t = tre 2 1
