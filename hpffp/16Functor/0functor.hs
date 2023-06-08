@@ -121,9 +121,29 @@ data Trivial = Trivial deriving (Eq, Show)
 -- !instance Functor Trivial where
 -- ? Can't do because Trivial is of kind *
 
+-- Short Exercise
+-- Write a Functor instance for a datatype identical to Maybe. We’ll use
+-- our own datatype because Maybe already has a Functor instance and
+-- we cannot make a duplicate one.
+
+data Possibly a
+  = LolNope
+  | Yeppers a
+  deriving (Eq, Show)
+
+instance Functor Possibly where
+  fmap f LolNope = LolNope
+  fmap f (Yeppers a) = Yeppers $ f a
+
+instance Arbitrary a => Arbitrary (Possibly a) where
+  arbitrary =
+    frequency
+      [ (1, return LolNope),
+        (2, Yeppers <$> arbitrary)
+      ]
+
 -- My Functor
-type MF =
-  Vier Int Int
+type MF = Possibly Int
 
 ch1 = quickCheck $ \x -> functorIdentity (x :: MF)
 
