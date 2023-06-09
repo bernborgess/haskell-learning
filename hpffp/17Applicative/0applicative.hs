@@ -1,4 +1,5 @@
 import Control.Applicative
+import Control.Monad
 import Data.Char
 import Data.Monoid
 
@@ -137,3 +138,63 @@ m x = lookup x [(4, 10), (8, 13), (1, 9001)]
 -- Just 9007
 -- Prelude> (+) <$> h 5 <*> m 6
 -- Nothing
+
+-- Applicative with IO
+l1 x = lookup x [(3, "hello"), (4, "dolly")]
+
+l2 x = lookup x [(6, "so nice to have you"), (7, "back where you belong")]
+
+fact x = lookup x [(0, 1), (1, 1), (2, 2), (3, 6)]
+
+square x = lookup x [(0, 0), (1, 1), (2, 4), (3, 9)]
+
+aio = (++) <$> getLine <*> getLine
+
+ad3 x y = (x + y +)
+
+-- Playing with a Stack
+newtype Stack a = Stack [a]
+
+instance Foldable Stack where
+  foldr f acc (Stack xs) = foldr f acc xs
+
+push :: Stack a -> a -> Stack a
+push (Stack xs) x = Stack $ x : xs
+
+pop :: Stack a -> Maybe (a, Stack a)
+pop (Stack (x : xs)) = Just (x, Stack xs)
+pop _ = Nothing
+
+isCmd :: String -> Bool
+isCmd s = fs `elem` ["push", "pop"]
+  where
+    fs = head $ words s
+
+st = Stack []
+
+stackle :: Stack Integer -> IO ()
+stackle sa = do
+  opt <- getLine
+  if isCmd opt
+    then do
+      if opt == "pop"
+        then do
+          putStr "pop"
+          let ba = pop sa
+          case ba of
+            Nothing -> putStr "Empty!"
+            Just (x, ns) -> do
+              putStr $ show x
+              stackle ns
+        else do
+          putStr "push"
+          x <- readLn :: IO Integer
+          let nsa = push sa x
+          stackle nsa
+    else putStr "over"
+
+-- stackle
+
+-- return ()
+
+-- Short Exercises
