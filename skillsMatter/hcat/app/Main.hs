@@ -1,4 +1,6 @@
 module Main where
 
+import HCat
+
 main :: IO ()
-main = readFile "example.txt" >>= putStrLn
+main = runHCat
