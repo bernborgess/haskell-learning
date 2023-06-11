@@ -1,3 +1,4 @@
+{-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE LambdaCase #-}
 -- {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -6,11 +7,13 @@
 module HCat where
 
 import qualified Data.ByteString as BS
+import Data.Char
 import qualified Data.Maybe as Maybe
 import qualified Data.Text as Text
 import qualified Data.Text.IO as TextIO
 import qualified Data.Time.Clock as Clock
 import qualified Data.Time.Format as TimeFormat
+import Foreign.C.Types
 import qualified System.Directory as Directory
 import qualified System.Environment as Environment
 import System.IO
@@ -163,11 +166,17 @@ getContinue :: IO ContinueCancel
 getContinue =
   hSetBuffering stdin NoBuffering
     >> hSetEcho stdin False
-    >> getChar
+    >> myGetChar
     >>= \case
       ' ' -> return Continue
       'q' -> return Cancel
       _ -> getContinue
+  where
+    myGetChar =
+      case System.Info.os of
+        "darwin" -> getChar
+        "linux" -> getChar
+        _ -> cGetChar
 
 showPages :: [Text.Text] -> IO ()
 showPages [] = return ()
@@ -177,7 +186,15 @@ showPages (page : pages) = do
   shouldContinue <- getContinue
   case shouldContinue of
     Continue -> showPages pages
-    Cancel -> return ()
+    Cancel -> do
+      clearScreen
+      return ()
+
+foreign import ccall unsafe "conio.h getch"
+  c_getch :: IO CInt
+
+cGetChar :: IO Char
+cGetChar = chr . fromEnum <$> c_getch
 
 getTerminalSize :: IO ScreenDimensions
 getTerminalSize =
