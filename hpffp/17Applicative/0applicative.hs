@@ -1,3 +1,7 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
+{-# HLINT ignore "Use <$" #-}
+{-# HLINT ignore "Use <$>" #-}
 import Control.Applicative
 import Control.Monad
 import Data.Char
@@ -197,4 +201,52 @@ stackle sa = do
 
 -- return ()
 
--- Short Exercises
+-- Exercise
+-- Given the function and values provided, use (<$>) from Functor,
+-- (<*>) and pure from the Applicative typeclass to fill in missing bits
+-- of the broken code to make it work.
+-- 1.
+e1 = const <$> Just "Hello" <*> Just "World"
+
+-- 2.
+e2 = (,,,) <$> Just 90 <*> Just 10 <*> Just "Tierness" <*> pure [1, 2, 3]
+
+-- Applicative laws
+-- 1. Identity
+id1 v = (pure id <$> v) == v
+
+-- 2. Composition
+comp1 u v w = e1 == e2
+  where
+    -- No suprises in function application composition
+    e1 = pure (.) <*> u <*> v <*> w
+    e2 = u <*> (v <*> w)
+
+comp2 = pure (.) <*> [(+ 1)] <*> [(* 2)] <*> [1, 2, 3]
+
+-- 3. Homomorphism
+-- A homomorphism is a structure-preserving map between two
+-- categories. The effect of applying a function that is embedded
+-- in some structure to a value that is embedded in some structure
+-- should be the same as applying a function to a value without
+-- affecting any outside structure:
+-- e1 = pure f <*> pure x :: ap b
+-- ===
+-- e2 = pure (f x)
+
+homo1 = pure (+ 1) <*> pure 1 :: Maybe Int
+
+homo2 = pure (+ 1) <*> pure 1 :: [Int]
+
+homo3 = pure (+ 1) <*> pure 1 :: Either a Int
+
+-- The general idea of the homomorphism law is that applying the
+-- function doesn’t change the structure around the values
+
+-- 4. Interchange
+-- u <*> pure y = pure ($ y) <*> u
+
+int1 = e1 == e2
+  where
+    e1 = Just (+ 2) <*> pure 2
+    e2 = pure ($ 2) <*> Just (+ 2)

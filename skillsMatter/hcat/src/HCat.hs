@@ -136,7 +136,7 @@ wordWrap lineLength lineText
       | Text.index hardwrappedText textIndex == ' ' =
           let (wrappedLine, rest) = Text.splitAt textIndex hardwrappedText
            in (wrappedLine, Text.tail rest)
-      | otherwise = softWrap hardwrappedText (textIndex - 1)
+      | otherwise = softWrap hardwrappedText $ textIndex - 1
 
 data ScreenDimensions = ScreenDimensions
   { screenRows :: Int,
