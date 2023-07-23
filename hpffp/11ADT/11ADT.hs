@@ -4,7 +4,7 @@ import Data.List
 -- 1. Explain the "algebra" of algebraic datatypes;
 -- 2. analyze the construction of data constructors;
 -- 3. spell out when and how to write your own datatypes;
--- 4. clarify usage of type synonums and newtype;
+-- 4. clarify usage of type synonym and newtype;
 -- 5. introduce kinds.
 
 -- data Bool = False | True
@@ -96,8 +96,8 @@ data ProgrammingLanguage
   deriving (Eq, Show)
 
 data Programmer = Programmer
-  { os :: OperatingSystem,
-    lang :: ProgrammingLanguage
+  { os :: OperatingSystem
+  , lang :: ProgrammingLanguage
   }
   deriving (Eq, Show)
 
@@ -106,10 +106,10 @@ data Programmer = Programmer
 -- the provided lists of inhabitants of OperatingSystem and ProgrammingLanguage.
 allOperatingSystems :: [OperatingSystem]
 allOperatingSystems =
-  [ GnuPlusLinux,
-    OpenBSDPlusNevermindJustBSDStill,
-    Mac,
-    Windows
+  [ GnuPlusLinux
+  , OpenBSDPlusNevermindJustBSDStill
+  , Mac
+  , Windows
   ]
 
 allLanguages :: [ProgrammingLanguage]
@@ -134,9 +134,9 @@ allProgrammers = [Programmer o l | o <- allOperatingSystems, l <- allLanguages]
 data Automobile
   = Null
   | Auto
-      { make :: String,
-        model :: String,
-        year :: Integer
+      { make :: String
+      , model :: String
+      , year :: Integer
       }
   deriving (Eq, Show)
 
@@ -153,8 +153,8 @@ wtf = make Null
 data Silly4 a b c d = MkSilly4 a b c d deriving (Show)
 
 -- Infix type and data constructors When we give an operator
--- a nonalphanumeric name, it is infix by default.
--- For example, all the nonalphanumeric arithmetic functions
+-- a non-alphanumeric name, it is infix by default.
+-- For example, all the non-alphanumeric arithmetic functions
 -- are infix operators, while we have some alphanumeric
 -- arithmetic functions, such as div and mod that are prefix
 -- by default. So far, we’ve only seen alphanumeric data
@@ -184,30 +184,30 @@ insert' b (Node left a right)
 treeMap :: (a -> b) -> BinaryTree a -> BinaryTree b
 treeMap f Leaf = Leaf
 treeMap f (Node left a right) = Node lt (f a) rt
-  where
-    lt = treeMap f left
-    rt = treeMap f right
+ where
+  lt = treeMap f left
+  rt = treeMap f right
 
 preorder :: BinaryTree a -> [a]
 preorder Leaf = []
 preorder (Node left a right) = a : lt ++ rt
-  where
-    lt = preorder left
-    rt = preorder right
+ where
+  lt = preorder left
+  rt = preorder right
 
 inorder :: BinaryTree a -> [a]
 inorder Leaf = []
 inorder (Node left a right) = lt ++ [a] ++ rt
-  where
-    lt = inorder left
-    rt = inorder right
+ where
+  lt = inorder left
+  rt = inorder right
 
 postorder :: BinaryTree a -> [a]
 postorder Leaf = []
 postorder (Node left a right) = lt ++ rt ++ [a]
-  where
-    lt = postorder left
-    rt = postorder right
+ where
+  lt = postorder left
+  rt = postorder right
 
 testTree = Node (Node Leaf 1 Leaf) 2 (Node Leaf 3 Leaf)
 

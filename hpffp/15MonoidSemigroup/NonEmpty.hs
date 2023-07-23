@@ -10,7 +10,7 @@ import Test.QuickCheck hiding (Failure, Success)
 
 -- Here :| is an infix data constructor that takes two
 -- (type) arguments. Its a product of a and [a].
--- It gurantees that we have at least one value of type a
+-- It guarantees that we have at least one value of type a
 xs = 1 :| [2, 3]
 
 ys = 4 :| [5, 6]
