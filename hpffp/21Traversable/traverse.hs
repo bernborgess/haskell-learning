@@ -1,3 +1,5 @@
+import Control.Monad
+
 -- In this chapter, we will:
 -- • explain the Traversable typeclass and its canonical functions;
 -- • explore examples of Traversable in practical use;
@@ -71,3 +73,13 @@ pipelineFn2 query = do
     traverse makeIoOnlyObj (mapM decodeFn a)
 
 -- We can make it pointfree if we want to:
+pipelineFn3 :: Query -> IO (Either Err [(SomeObj, IoOnlyObj)])
+-- pipelineFn3 = (traverse makeIoOnlyObj . mapM decodeFn =<<) . fetchFn
+-- pipelineFn3 = (traverse makeIoOnlyObj . mapM decodeFn) <=< fetchFn
+pipelineFn3 = fetchFn >=> (traverse makeIoOnlyObj . mapM decodeFn)
+
+-- And since mapM is just traverse with a slightly different type:
+pipelineFn4 :: Query -> IO (Either Err [(SomeObj, IoOnlyObj)])
+-- pipelineFn4 = (traverse makeIoOnlyObj . traverse decodeFn =<<) . fetchFn
+-- pipelineFn4 = (traverse makeIoOnlyObj . traverse decodeFn) <=< fetchFn
+pipelineFn4 = fetchFn >=> traverse makeIoOnlyObj . traverse decodeFn
