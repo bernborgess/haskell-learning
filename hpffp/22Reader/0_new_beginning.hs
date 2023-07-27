@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
+{-# HLINT ignore "Use <$>" #-}
 import Control.Applicative
 import Data.Char
 
@@ -189,5 +192,30 @@ asks = Reader
 -- 4. Rewrite the above example that uses Dog and Person
 -- to use your Reader datatype you just implemented the
 -- Applicative for. You’ll need to change the types as well.
-getDogMR :: Reader Person Dog
-getDogMR = Reader $ Dog <$> dogName <*> address
+getDogRb :: Reader Person Dog
+getDogRb = Reader $ Dog <$> dogName <*> address
+
+-- ? 22.7 The Monad of functions
+
+-- Example uses of the Reader type
+-- Remember the earlier example with Person and Dog?
+-- Here’s the same but with the Reader Monad and do syntax:
+-- with Reader Monad
+getDogRM :: Person -> Dog
+getDogRM = do
+  name <- dogName
+  addr <- address
+  return $ Dog name addr
+
+-- Exercise
+-- 1. Implement the Reader Monad. (done up there)
+
+-- 2. Rewrite the monadic getDogRM to use your Reader datatype.
+
+-- Reader Person (DogName,Address) -> ((DogName,Address) -> Reader Person Dog) -> Reader Person Dog
+
+getDogRMb :: Reader Person Dog
+getDogRMb = do
+  name <- Reader dogName
+  addr <- Reader address
+  return $ Dog name addr
