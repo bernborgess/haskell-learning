@@ -1,28 +1,15 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeOperators #-}
 
-module Lib (
+module Server (
   startApp,
   app,
 ) where
 
-import Data.Aeson
-import Data.Aeson.TH
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 
-data User = User
-  { userId :: Int
-  , userFirstName :: String
-  , userLastName :: String
-  }
-  deriving (Eq, Show)
-
-$(deriveJSON defaultOptions ''User)
-
-type API = "users" :> Get '[JSON] [User]
+import Api (API, User (User))
 
 startApp :: Int -> IO ()
 startApp port = run port app

@@ -25,7 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Api
+      Server
   other-modules:
       Paths_todo
   hs-source-dirs:
