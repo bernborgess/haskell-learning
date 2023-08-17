@@ -23,6 +23,8 @@ data User = User
     deriving (Eq, Show, Generic)
 
 instance ToJSON User
--- $(deriveJSON defaultOptions ''User)
 
-type API = "users" :> Get '[JSON] [User]
+type API =
+    "users" :> Get '[JSON] [User]
+        :<|> "albert" :> Get '[JSON] User
+        :<|> "isaac" :> Get '[JSON] User

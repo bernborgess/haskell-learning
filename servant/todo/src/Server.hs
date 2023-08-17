@@ -48,10 +48,16 @@ api :: Proxy API
 api = Proxy
 
 server :: Server API
-server = return users
+server =
+  return users
+    :<|> return albert
+    :<|> return isaac
 
 users :: [User]
-users =
-  [ User "Isaac Newton" 23 "isaac_newton@apple.com" (fromGregorian 1683 3 1)
-  , User "Albert Einstein" 44 "albert@gmail.com" (fromGregorian 1905 12 1)
-  ]
+users = [isaac, albert]
+
+isaac :: User
+isaac = User "Isaac Newton" 23 "isaac_newton@apple.com" (fromGregorian 1683 3 1)
+
+albert :: User
+albert = User "Albert Einstein" 44 "albert@gmail.com" (fromGregorian 1905 12 1)
