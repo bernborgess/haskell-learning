@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Server (
   startApp,
@@ -35,7 +36,15 @@ import Text.Blaze
 import qualified Text.Blaze.Html
 import Text.Blaze.Html.Renderer.Utf8
 
-import Api (API, User (User))
+import Api (
+  API,
+  ClientInfo (..),
+  Email (..),
+  HelloMessage (..),
+  Position (..),
+  User (..),
+  emailForClient,
+ )
 import Data.Time (fromGregorian)
 
 startApp :: Int -> IO ()
@@ -49,9 +58,23 @@ api = Proxy
 
 server :: Server API
 server =
-  return users
-    :<|> return albert
-    :<|> return isaac
+  position
+    :<|> hello
+    :<|> marketing
+ where
+  position :: Int -> Int -> Handler Position
+  position x = return . Position x
+
+  hello :: Maybe String -> Handler HelloMessage
+  hello =
+    return
+      . HelloMessage
+      . \case
+        Nothing -> "Hello, anonymous coward"
+        Just n -> "Hello, " ++ n
+
+  marketing :: ClientInfo -> Handler Email
+  marketing = return . emailForClient
 
 users :: [User]
 users = [isaac, albert]
