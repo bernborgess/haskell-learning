@@ -10,8 +10,7 @@ module Api (
 
 import Data.Aeson
 import Data.Aeson.TH
-
--- import Data.Time.Calendar
+import Data.Time.Calendar
 import GHC.Generics
 import Servant
 
@@ -19,7 +18,7 @@ data User = User
     { name :: String
     , age :: Int
     , email :: String
-    -- , registration_date :: Day
+    , registration_date :: Day
     }
     deriving (Eq, Show, Generic)
 
