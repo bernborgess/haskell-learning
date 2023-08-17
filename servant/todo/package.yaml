@@ -36,6 +36,7 @@ dependencies:
 - string-conversions
 - time
 - wai
+- wai-logger
 - warp
 
 ghc-options:

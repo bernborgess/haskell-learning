@@ -29,6 +29,7 @@ import Lucid
 import Network.HTTP.Media ((//), (/:))
 import Network.Wai
 import Network.Wai.Handler.Warp
+import Network.Wai.Logger (withStdoutLogger)
 import Servant
 import Servant.Types.SourceT (source)
 import System.Directory
@@ -48,7 +49,12 @@ import Api (
 import Data.Time (fromGregorian)
 
 startApp :: Int -> IO ()
-startApp port = run port app
+startApp port =
+  withStdoutLogger $ \aplogger -> do
+    let settings = setPort port $ setLogger aplogger defaultSettings
+    runSettings settings app
+
+-- run port app
 
 app :: Application
 app = serve api server

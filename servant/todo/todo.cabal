@@ -49,6 +49,7 @@ library
     , string-conversions
     , time
     , wai
+    , wai-logger
     , warp
   default-language: Haskell2010
 
@@ -77,6 +78,7 @@ executable todo-exe
     , time
     , todo
     , wai
+    , wai-logger
     , warp
   default-language: Haskell2010
 
@@ -109,5 +111,6 @@ test-suite todo-test
     , time
     , todo
     , wai
+    , wai-logger
     , warp
   default-language: Haskell2010
