@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators #-}
 
@@ -9,15 +10,20 @@ module Api (
 
 import Data.Aeson
 import Data.Aeson.TH
+
+-- import Data.Time.Calendar
+import GHC.Generics
 import Servant
 
 data User = User
-    { userId :: Int
-    , userFirstName :: String
-    , userLastName :: String
+    { name :: String
+    , age :: Int
+    , email :: String
+    -- , registration_date :: Day
     }
-    deriving (Eq, Show)
+    deriving (Eq, Show, Generic)
 
-$(deriveJSON defaultOptions ''User)
+instance ToJSON User
+-- $(deriveJSON defaultOptions ''User)
 
 type API = "users" :> Get '[JSON] [User]

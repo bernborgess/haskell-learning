@@ -25,6 +25,5 @@ server = return users
 
 users :: [User]
 users =
-  [ User 1 "Isaac" "Newton"
-  , User 2 "Albert" "Einstein"
-  ]
+  [ User "Isaac Newton" 23 "isaac_newton@apple.com"
+  , User "Albert Einstein" 44 "albert@gmail.com" ]
