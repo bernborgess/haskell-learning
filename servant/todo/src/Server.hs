@@ -38,6 +38,7 @@ import qualified Text.Blaze.Html
 import Text.Blaze.Html.Renderer.Utf8
 
 import Api (API)
+import Api.File (FileAPI, server5)
 import Api.Hello (HelloMessage (..))
 import Api.Marketing (ClientInfo, Email, emailForClient)
 import Api.Position (Position (..))
@@ -50,11 +51,11 @@ startApp port =
     runSettings settings app
 
 app :: Application
-app = serve personAPI server4
+app = serve api server5
 
 -- app = serve api server
 
-api :: Proxy API
+api :: Proxy FileAPI
 api = Proxy
 
 server :: Server API

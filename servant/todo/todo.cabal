@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Api
+      Api.File
       Api.Hello
       Api.Marketing
       Api.Position
