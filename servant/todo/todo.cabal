@@ -30,6 +30,7 @@ library
       Api.Marketing
       Api.Position
       Server
+      Ui
   other-modules:
       Paths_todo
   hs-source-dirs:

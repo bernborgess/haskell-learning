@@ -41,6 +41,7 @@ import Api (API)
 import Api.Hello (HelloMessage (..))
 import Api.Marketing (ClientInfo, Email, emailForClient)
 import Api.Position (Position (..))
+import Ui (personAPI, server4)
 
 startApp :: Int -> IO ()
 startApp port =
@@ -49,7 +50,9 @@ startApp port =
     runSettings settings app
 
 app :: Application
-app = serve api server
+app = serve personAPI server4
+
+-- app = serve api server
 
 api :: Proxy API
 api = Proxy
