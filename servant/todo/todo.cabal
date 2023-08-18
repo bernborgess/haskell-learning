@@ -26,6 +26,9 @@ source-repository head
 library
   exposed-modules:
       Api
+      Api.Hello
+      Api.Marketing
+      Api.Position
       Server
   other-modules:
       Paths_todo

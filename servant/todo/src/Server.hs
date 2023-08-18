@@ -37,24 +37,16 @@ import Text.Blaze
 import qualified Text.Blaze.Html
 import Text.Blaze.Html.Renderer.Utf8
 
-import Api (
-  API,
-  ClientInfo (..),
-  Email (..),
-  HelloMessage (..),
-  Position (..),
-  User (..),
-  emailForClient,
- )
-import Data.Time (fromGregorian)
+import Api (API)
+import Api.Hello (HelloMessage (..))
+import Api.Marketing (ClientInfo, Email, emailForClient)
+import Api.Position (Position (..))
 
 startApp :: Int -> IO ()
 startApp port =
-  withStdoutLogger $ \aplogger -> do
-    let settings = setPort port $ setLogger aplogger defaultSettings
+  withStdoutLogger $ \apacheLogger -> do
+    let settings = setPort port $ setLogger apacheLogger defaultSettings
     runSettings settings app
-
--- run port app
 
 app :: Application
 app = serve api server
@@ -81,12 +73,3 @@ server =
 
   marketing :: ClientInfo -> Handler Email
   marketing = return . emailForClient
-
-users :: [User]
-users = [isaac, albert]
-
-isaac :: User
-isaac = User "Isaac Newton" 23 "isaac_newton@apple.com" (fromGregorian 1683 3 1)
-
-albert :: User
-albert = User "Albert Einstein" 44 "albert@gmail.com" (fromGregorian 1905 12 1)
