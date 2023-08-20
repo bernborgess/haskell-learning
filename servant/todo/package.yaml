@@ -28,6 +28,7 @@ dependencies:
 - blaze-markup
 - bytestring
 - directory
+- dotenv
 - http-client
 - http-media
 - lucid

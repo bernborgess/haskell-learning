@@ -47,6 +47,7 @@ library
     , blaze-markup
     , bytestring
     , directory
+    , dotenv
     , http-client
     , http-media
     , lucid
@@ -78,6 +79,7 @@ executable todo-exe
     , blaze-markup
     , bytestring
     , directory
+    , dotenv
     , http-client
     , http-media
     , lucid
@@ -111,6 +113,7 @@ test-suite todo-test
     , blaze-markup
     , bytestring
     , directory
+    , dotenv
     , hspec
     , hspec-wai
     , hspec-wai-json
