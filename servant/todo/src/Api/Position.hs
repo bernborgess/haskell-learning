@@ -3,8 +3,8 @@
 {-# LANGUAGE TypeOperators #-}
 
 module Api.Position (
-    Position (..),
     PositionAPI,
+    positionHandler,
 ) where
 
 import Data.Aeson (ToJSON)
@@ -20,4 +20,9 @@ data Position = Position
 
 instance ToJSON Position
 
+-- ? Export
+
 type PositionAPI = "position" :> Capture "x" Int :> Capture "y" Int :> Get '[JSON] Position
+
+positionHandler :: Int -> Int -> Handler Position
+positionHandler x = return . Position x

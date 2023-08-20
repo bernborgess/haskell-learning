@@ -4,7 +4,7 @@
 
 module Api.File (
     FileAPI,
-    server5,
+    fileHandler,
 ) where
 
 import Control.Monad.Cont
@@ -20,8 +20,8 @@ newtype FileContent = FileContent
 
 instance ToJSON FileContent
 
-server5 :: Server FileAPI
-server5 = do
+fileHandler :: Handler FileContent
+fileHandler = do
     fileContent <- liftIO (readFile "myfile.txt")
     -- let fileContent = "content"
     -- liftIO (writeFile "somefile.txt" fileContent)

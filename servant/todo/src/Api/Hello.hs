@@ -1,10 +1,11 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TypeOperators #-}
 
 module Api.Hello (
-    HelloMessage (..),
     HelloAPI,
+    helloHandler,
 ) where
 
 import Data.Aeson (ToJSON)
@@ -17,3 +18,11 @@ newtype HelloMessage = HelloMessage {msg :: String}
 instance ToJSON HelloMessage
 
 type HelloAPI = "hello" :> QueryParam "name" String :> Get '[JSON] HelloMessage
+
+helloHandler :: Maybe String -> Handler HelloMessage
+helloHandler =
+    return
+        . HelloMessage
+        . \case
+            Nothing -> "Hello, anonymous coward"
+            Just n -> "Hello, " ++ n

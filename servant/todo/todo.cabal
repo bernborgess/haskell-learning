@@ -29,9 +29,9 @@ library
       Api.File
       Api.Hello
       Api.Marketing
+      Api.Person
       Api.Position
       Server
-      Ui
   other-modules:
       Paths_todo
   hs-source-dirs:

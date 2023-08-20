@@ -38,42 +38,26 @@ import qualified Text.Blaze.Html
 import Text.Blaze.Html.Renderer.Utf8
 
 import Api (API)
-import Api.File (FileAPI, server5)
-import Api.Hello (HelloMessage (..))
-import Api.Marketing (ClientInfo, Email, emailForClient)
-import Api.Position (Position (..))
-import Ui (personAPI, server4)
+import Api.File (fileHandler)
+import Api.Hello (helloHandler)
+import Api.Marketing (marketingHandler)
+import Api.Person (personHandler)
+import Api.Position (positionHandler)
 
 startApp :: Int -> IO ()
-startApp port =
-  withStdoutLogger $ \apacheLogger -> do
-    let settings = setPort port $ setLogger apacheLogger defaultSettings
-    runSettings settings app
+startApp port = withStdoutLogger $ \apacheLogger -> do
+  let settings = setPort port $ setLogger apacheLogger defaultSettings
+  runSettings settings app
 
 app :: Application
-app = serve api server5
-
--- app = serve api server
-
-api :: Proxy FileAPI
-api = Proxy
+app = serve api server
+ where
+  api = Proxy :: Proxy API
 
 server :: Server API
 server =
-  position
-    :<|> hello
-    :<|> marketing
- where
-  position :: Int -> Int -> Handler Position
-  position x = return . Position x
-
-  hello :: Maybe String -> Handler HelloMessage
-  hello =
-    return
-      . HelloMessage
-      . \case
-        Nothing -> "Hello, anonymous coward"
-        Just n -> "Hello, " ++ n
-
-  marketing :: ClientInfo -> Handler Email
-  marketing = return . emailForClient
+  positionHandler
+    :<|> helloHandler
+    :<|> marketingHandler
+    :<|> personHandler
+    :<|> fileHandler

@@ -3,10 +3,8 @@
 {-# LANGUAGE TypeOperators #-}
 
 module Api.Marketing (
-    ClientInfo (..),
-    Email (..),
-    emailForClient,
     MarketingAPI,
+    marketingHandler,
 ) where
 
 import Data.Aeson
@@ -49,4 +47,9 @@ emailForClient c = Email from' to' subject' body'
             ++ intercalate ", " (clientInterestedIn c)
             ++ " products? Give us a visit!"
 
+-- ? Export
+
 type MarketingAPI = "marketing" :> ReqBody '[JSON] ClientInfo :> Post '[JSON] Email
+
+marketingHandler :: ClientInfo -> Handler Email
+marketingHandler = return . emailForClient

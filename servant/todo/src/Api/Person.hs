@@ -5,24 +5,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Ui (
-    HTMLLucid,
-    personAPI,
-    server4,
+module Api.Person (
+    PersonAPI,
+    personHandler,
 ) where
 
 import Data.Aeson (ToJSON)
 import GHC.Generics (Generic)
 import Lucid (ToHtml (..), renderBS, table_, td_, th_, tr_)
 import Network.HTTP.Media ((//), (/:))
-import Servant (
-    Accept (..),
-    Get,
-    JSON,
-    MimeRender (..),
-    Proxy (..),
-    Server,
- )
+import Servant (Accept (..), Get, Handler, JSON, MimeRender (..))
 import Servant.API ((:>))
 
 data HTMLLucid
@@ -32,8 +24,6 @@ instance Accept HTMLLucid where
 
 instance ToHtml a => MimeRender HTMLLucid a where
     mimeRender _ = renderBS . toHtml
-
-type PersonAPI = "persons" :> Get '[JSON, HTMLLucid] [Person]
 
 data Person = Person
     { firstName :: String
@@ -71,8 +61,9 @@ people =
     , Person "Albert" "Einstein"
     ]
 
-personAPI :: Proxy PersonAPI
-personAPI = Proxy
+-- ? Exports
 
-server4 :: Server PersonAPI
-server4 = return people
+type PersonAPI = "persons" :> Get '[JSON, HTMLLucid] [Person]
+
+personHandler :: Handler [Person]
+personHandler = return people
