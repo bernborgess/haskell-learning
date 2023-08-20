@@ -32,6 +32,7 @@ library
       Api.Person
       Api.Position
       Server
+      Storage
   other-modules:
       Paths_todo
   hs-source-dirs:
@@ -46,11 +47,14 @@ library
     , blaze-markup
     , bytestring
     , directory
+    , http-client
     , http-media
     , lucid
     , mtl
     , servant
+    , servant-client
     , servant-server
+    , sqlite-simple
     , string-conversions
     , time
     , wai
@@ -74,11 +78,14 @@ executable todo-exe
     , blaze-markup
     , bytestring
     , directory
+    , http-client
     , http-media
     , lucid
     , mtl
     , servant
+    , servant-client
     , servant-server
+    , sqlite-simple
     , string-conversions
     , time
     , todo
@@ -107,11 +114,14 @@ test-suite todo-test
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , http-client
     , http-media
     , lucid
     , mtl
     , servant
+    , servant-client
     , servant-server
+    , sqlite-simple
     , string-conversions
     , time
     , todo

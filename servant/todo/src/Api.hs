@@ -10,6 +10,7 @@ import Api.Hello (HelloAPI)
 import Api.Marketing (MarketingAPI)
 import Api.Person (PersonAPI)
 import Api.Position (PositionAPI)
+import Storage (StorageAPI)
 
 type API =
     PositionAPI
@@ -17,3 +18,4 @@ type API =
         :<|> MarketingAPI
         :<|> PersonAPI
         :<|> FileAPI
+        :<|> StorageAPI

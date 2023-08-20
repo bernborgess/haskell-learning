@@ -3,6 +3,7 @@
 module Server (
   startApp,
   app,
+  api,
 ) where
 
 import Prelude.Compat
@@ -20,21 +21,25 @@ import Api.Hello (helloHandler)
 import Api.Marketing (marketingHandler)
 import Api.Person (personHandler)
 import Api.Position (positionHandler)
+import Storage (StorageAPI, storageHandler)
 
-startApp :: Int -> IO ()
-startApp port = withStdoutLogger $ \logger -> do
+startApp :: Int -> FilePath -> IO ()
+startApp port dbfile = withStdoutLogger $ \logger -> do
   let settings = setPort port $ setLogger logger defaultSettings
-  runSettings settings app
+  runSettings settings $ app dbfile
 
-app :: Application
-app = serve api server
- where
-  api = Proxy :: Proxy API
+app :: FilePath -> Application
+app = serve api . server
 
-server :: Server API
-server =
-  positionHandler
-    :<|> helloHandler
-    :<|> marketingHandler
-    :<|> personHandler
-    :<|> fileHandler
+api :: Proxy StorageAPI
+api = Proxy
+
+server :: FilePath -> Server StorageAPI
+server = storageHandler
+
+-- positionHandler
+--   :<|> helloHandler
+--   :<|> marketingHandler
+--   :<|> personHandler
+--   :<|> fileHandler
+--   :<|>
