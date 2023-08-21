@@ -21,25 +21,29 @@ import Api.Hello (helloHandler)
 import Api.Marketing (marketingHandler)
 import Api.Person (personHandler)
 import Api.Position (positionHandler)
-import Storage (StorageAPI, storageHandler)
+import Api.Storage (storageHandler)
 
-startApp :: Int -> FilePath -> IO ()
-startApp port dbfile = withStdoutLogger $ \logger -> do
-  let settings = setPort port $ setLogger logger defaultSettings
-  runSettings settings $ app dbfile
+import System.Environment (getEnv)
 
-app :: FilePath -> Application
-app = serve api . server
+startApp :: IO ()
+startApp = withStdoutLogger appRunner
+ where
+  appRunner logger = do
+    port <- read <$> getEnv "PORT"
+    let settings = setPort port $ setLogger logger defaultSettings
+    runSettings settings app
 
-api :: Proxy StorageAPI
+app :: Application
+app = serve api server
+
+api :: Proxy API
 api = Proxy
 
-server :: FilePath -> Server StorageAPI
-server = storageHandler
-
--- positionHandler
---   :<|> helloHandler
---   :<|> marketingHandler
---   :<|> personHandler
---   :<|> fileHandler
---   :<|>
+server :: Server API
+server =
+  positionHandler
+    :<|> helloHandler
+    :<|> marketingHandler
+    :<|> personHandler
+    :<|> fileHandler
+    :<|> storageHandler

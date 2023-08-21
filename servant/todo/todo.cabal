@@ -31,8 +31,8 @@ library
       Api.Marketing
       Api.Person
       Api.Position
+      Api.Storage
       Server
-      Storage
   other-modules:
       Paths_todo
   hs-source-dirs:
