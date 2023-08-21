@@ -15,5 +15,5 @@ main = do
     dbFile <- getEnv "DATABASE_FILE"
     initDB dbFile
 
-    putStrLn $ "Running in port " ++ show port
+    putStrLn $ "Running in port " ++ port
     startApp

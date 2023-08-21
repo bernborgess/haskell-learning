@@ -17,10 +17,11 @@ import Api.Storage (StorageAPI)
 
 type API =
     "position" :> PositionAPI
-        :<|> "hello" :> HelloAPI
-        :<|> "marketing" :> MarketingAPI
-        :<|> "persons" :> PersonAPI
-        :<|> "files" :> FileAPI
-        :<|> "database" :> StorageAPI
+
+-- :<|> "hello" :> HelloAPI
+-- :<|> "marketing" :> MarketingAPI
+-- :<|> "persons" :> PersonAPI
+-- :<|> "files" :> FileAPI
+-- :<|> "database" :> StorageAPI
 
 -- :<|> SwaggerAPI

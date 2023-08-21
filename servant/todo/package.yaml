@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - base-compat-batteries
 - aeson
+- aeson-pretty
 - attoparsec
 - blaze-html
 - blaze-markup
@@ -39,6 +40,8 @@ dependencies:
 - servant-swagger
 - sqlite-simple
 - string-conversions
+- swagger2
+- text
 - time
 - wai
 - wai-logger

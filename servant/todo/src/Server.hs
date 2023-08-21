@@ -42,8 +42,8 @@ api = Proxy
 server :: Server API
 server =
   positionHandler
-    :<|> helloHandler
-    :<|> marketingHandler
-    :<|> personHandler
-    :<|> fileHandler
-    :<|> storageHandler
+    -- :<|> helloHandler
+    -- :<|> marketingHandler
+    -- :<|> personHandler
+    -- :<|> fileHandler
+    -- :<|> storageHandler

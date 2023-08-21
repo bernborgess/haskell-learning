@@ -40,6 +40,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       aeson
+    , aeson-pretty
     , attoparsec
     , base >=4.7 && <5
     , base-compat-batteries
@@ -58,6 +59,8 @@ library
     , servant-swagger
     , sqlite-simple
     , string-conversions
+    , swagger2
+    , text
     , time
     , wai
     , wai-logger
@@ -73,6 +76,7 @@ executable todo-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
+    , aeson-pretty
     , attoparsec
     , base
     , base-compat-batteries
@@ -91,6 +95,8 @@ executable todo-exe
     , servant-swagger
     , sqlite-simple
     , string-conversions
+    , swagger2
+    , text
     , time
     , todo
     , wai
@@ -108,6 +114,7 @@ test-suite todo-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
+    , aeson-pretty
     , attoparsec
     , base
     , base-compat-batteries
@@ -129,6 +136,8 @@ test-suite todo-test
     , servant-swagger
     , sqlite-simple
     , string-conversions
+    , swagger2
+    , text
     , time
     , todo
     , wai
