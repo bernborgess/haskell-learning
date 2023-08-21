@@ -17,7 +17,7 @@ newtype HelloMessage = HelloMessage {msg :: String}
 
 instance ToJSON HelloMessage
 
-type HelloAPI = "hello" :> QueryParam "name" String :> Get '[JSON] HelloMessage
+type HelloAPI = QueryParam "name" String :> Get '[JSON] HelloMessage
 
 helloHandler :: Maybe String -> Handler HelloMessage
 helloHandler =

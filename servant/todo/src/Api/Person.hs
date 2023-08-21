@@ -63,7 +63,7 @@ people =
 
 -- ? Exports
 
-type PersonAPI = "persons" :> Get '[JSON, HTMLLucid] [Person]
+type PersonAPI = Get '[JSON, HTMLLucid] [Person]
 
 personHandler :: Handler [Person]
 personHandler = return people

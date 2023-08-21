@@ -55,6 +55,7 @@ library
     , servant
     , servant-client
     , servant-server
+    , servant-swagger
     , sqlite-simple
     , string-conversions
     , time
@@ -87,6 +88,7 @@ executable todo-exe
     , servant
     , servant-client
     , servant-server
+    , servant-swagger
     , sqlite-simple
     , string-conversions
     , time
@@ -124,6 +126,7 @@ test-suite todo-test
     , servant
     , servant-client
     , servant-server
+    , servant-swagger
     , sqlite-simple
     , string-conversions
     , time

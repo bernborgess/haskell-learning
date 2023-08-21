@@ -49,7 +49,7 @@ emailForClient c = Email from' to' subject' body'
 
 -- ? Export
 
-type MarketingAPI = "marketing" :> ReqBody '[JSON] ClientInfo :> Post '[JSON] Email
+type MarketingAPI = ReqBody '[JSON] ClientInfo :> Post '[JSON] Email
 
 marketingHandler :: ClientInfo -> Handler Email
 marketingHandler = return . emailForClient

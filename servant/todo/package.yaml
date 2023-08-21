@@ -36,6 +36,7 @@ dependencies:
 - servant
 - servant-client
 - servant-server
+- servant-swagger
 - sqlite-simple
 - string-conversions
 - time

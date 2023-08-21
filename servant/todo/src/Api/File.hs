@@ -10,19 +10,12 @@ module Api.File (
 
 import Control.Monad.Cont
 import Data.Aeson (ToJSON)
+import Data.Char (isAlpha)
 import GHC.Generics (Generic)
-import Servant (
-    Get,
-    Handler,
-    JSON,
-    ServerError (errBody),
-    err404,
-    throwError,
-    (:>),
- )
+import Servant
 import System.Directory (doesFileExist)
 
-type FileAPI = "myfile.txt" :> Get '[JSON] FileContent
+type FileAPI = Capture "filename" String :> Get '[JSON] FileContent
 
 newtype FileContent = FileContent
     {content :: String}
@@ -30,14 +23,18 @@ newtype FileContent = FileContent
 
 instance ToJSON FileContent
 
-fileHandler :: Handler FileContent
-fileHandler = do
-    exists <- liftIO (doesFileExist filename)
+sanitize :: [Char] -> [Char]
+sanitize = filter (\c -> isAlpha c || c == '.')
+
+fileHandler :: String -> Handler FileContent
+fileHandler rawFilename = do
+    let filename = sanitize rawFilename
+    let path = "files/" ++ filename
+    exists <- liftIO (doesFileExist path)
     if exists
         then do
-            fileContent <- liftIO (readFile filename)
+            fileContent <- liftIO (readFile path)
             return (FileContent fileContent)
         else throwError custom404Err
   where
-    filename = "myfile.txt"
-    custom404Err = err404{errBody = "myfile.txt just moved"}
+    custom404Err = err404{errBody = "file not found"}
