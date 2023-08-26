@@ -1,8 +1,12 @@
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE TupleSections #-}
+
 module Intro where
 
 import Control.Applicative (liftA3)
 import Control.Monad
 import Control.Monad.Trans.State
+import Data.Bifunctor
 import System.Random
 
 {-
@@ -158,3 +162,36 @@ rollsCountLogged n = go 0 (0, [])
         | otherwise =
             let (die, nextGen) = randomR (1, 6) gen
              in go (sum + die) (count + 1, intToDie die : xs) nextGen
+
+-- * Write State for yourself
+newtype Moi s a = Moi {runMoi :: s -> (a, s)}
+
+-- State Functor
+instance Functor (Moi s) where
+    fmap :: (a -> b) -> Moi s a -> Moi s b
+    fmap f (Moi g) = Moi $ first f . g
+
+-- State Applicative
+instance Applicative (Moi s) where
+    pure :: a -> Moi s a
+    pure a = Moi (a,)
+
+    (<*>) :: Moi s (a -> b) -> Moi s a -> Moi s b
+    (Moi f) <*> (Moi g) = Moi $ \s ->
+        let (fn, s') = f s
+            (a, s'') = g s'
+         in (fn a, s'')
+
+-- State Monad
+instance Monad (Moi s) where
+    (>>=) :: Moi s a -> (a -> Moi s b) -> Moi s b
+    (Moi f) >>= g = Moi $ ap fst snd . first (runMoi . g) . f
+
+-- \s ->
+--     let (a, s') = f s
+--         moi = g a
+--         fn = runMoi moi
+--         x = ap fst snd . first (runMoi . g) . f
+--      in fn s'
+
+-- Moi . ap fst snd . first (runMoi . g) . f
