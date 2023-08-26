@@ -1,0 +1,18 @@
+cabal-version:      2.4
+name:               StatesHpffp
+version:            0.1.0.0
+synopsis:
+
+license:            NONE
+author:             bernborgess
+maintainer:         bernborgess@outlook.com
+
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  Intro
+    build-depends:    base ^>=4.16.4.0
+                    , random == 1.1
+                    , transformers
+                    
+    default-language: Haskell2010
