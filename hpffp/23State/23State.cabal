@@ -15,5 +15,6 @@ library
                     , random == 1.1
                     , transformers
                     , bifunctors
+                    , dlist
                     
     default-language: Haskell2010

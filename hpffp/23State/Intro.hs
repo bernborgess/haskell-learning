@@ -7,6 +7,8 @@ import Control.Applicative (liftA3)
 import Control.Monad
 import Control.Monad.Trans.State
 import Data.Bifunctor
+import qualified Data.DList as DL
+import Data.Functor.Identity (Identity (runIdentity))
 import System.Random
 
 {-
@@ -187,11 +189,98 @@ instance Monad (Moi s) where
     (>>=) :: Moi s a -> (a -> Moi s b) -> Moi s b
     (Moi f) >>= g = Moi $ ap fst snd . first (runMoi . g) . f
 
--- \s ->
---     let (a, s') = f s
---         moi = g a
---         fn = runMoi moi
---         x = ap fst snd . first (runMoi . g) . f
---      in fn s'
+-- ? Get a coding job with one weird trick
 
--- Moi . ap fst snd . first (runMoi . g) . f
+-- fizzBuzz :: Integer -> String
+fizzBuzz :: Integer -> String
+fizzBuzz n
+    | n `mod` 15 == 0 = "FizzBuzz"
+    | n `mod` 5 == 0 = "Fizz"
+    | n `mod` 3 == 0 = "Buzz"
+    | otherwise = show n
+
+-- naive
+-- main = mapM_ (putStrLn . fizzBuzz) [1 .. 100]
+
+-- the monster
+addResult :: Integer -> State [String] ()
+addResult n = do
+    xs <- get
+    let result = fizzBuzz n
+    put (result : xs)
+
+fizzBuzzList :: [Integer] -> [String]
+fizzBuzzList list =
+    execState (mapM_ addResult list) []
+
+-- mapM_ putStrLn $ reverse $ fizzBuzzList [1 .. 100]
+
+-- Using difference list O(1) append
+addResultDL :: Integer -> State (DL.DList String) ()
+addResultDL n = do
+    xs <- get
+    let result = fizzBuzz n
+    put (DL.snoc xs result)
+
+fizzBuzzDL :: [Integer] -> DL.DList String
+fizzBuzzDL list =
+    execState (mapM_ addResultDL list) DL.empty
+
+-- main = mapM_ putStrLn $ fizzBuzzDL [1 .. 100]
+
+-- FizzBuzz Differently
+
+fizzBuzzFromTo :: Integer -> Integer -> [String]
+fizzBuzzFromTo l r = fizzBuzzList [r, (r - 1) .. l]
+
+-- mapM_ putStrLn $ fizzBuzzFromTo 1 100
+
+-- ? Chapter exercises
+-- 1. Construct a State where the state is also the
+-- value you return.
+get' :: State s s
+get' = state $ \s -> (s, s)
+
+-- Expected output
+-- Prelude> runState get' "curryIsAmaze"
+-- ("curryIsAmaze","curryIsAmaze")
+
+-- 2. Construct a State where the resulting state
+-- is the argument provided and the value is defaulted
+-- to unit.
+put' :: s -> State s ()
+put' s = state $ const ((), s)
+
+-- Prelude> runState (put "blah") "woot"
+-- ((),"blah")
+
+-- 3. Run the State with 𝑠 and get the state that results.
+exec :: State s a -> s -> s
+exec (StateT sa) = snd . runIdentity . sa
+
+-- Prelude> exec (put "wilma") "daphne"
+-- "wilma"
+-- Prelude> exec get "scooby papu"
+-- "scooby papu"
+
+-- 4. Run the State with 𝑠 and get the value that results.
+eval :: State s a -> s -> a
+eval (StateT sa) = fst . runIdentity . sa
+
+-- Prelude> eval get "bunnicula"
+-- "bunnicula"
+-- Prelude> eval get "stake a bunny"
+-- "stake a bunny"
+
+-- 5. Write a function which applies a function to
+-- create a new State.
+modify' :: (s -> s) -> State s ()
+modify' fn = state $ \s -> ((), fn s)
+
+-- Should behave like the following:
+-- Prelude> runState (modify (+1)) 0
+-- ((),1)
+-- Prelude> runState (modify (+1) >> modify (+1)) 0
+-- ((),2)
+-- Note you don’t need to compose them, you can just throw away
+-- the result because it returns unit for 𝑎 anyway.
