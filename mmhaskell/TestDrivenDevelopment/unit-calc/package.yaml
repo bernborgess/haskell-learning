@@ -21,9 +21,9 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-- HUnit
 - tasty
 - tasty-hunit
+- hspec
 
 ghc-options:
 - -Wall
@@ -60,6 +60,6 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - unit-calc
-    - HUnit
     - tasty
     - tasty-hunit
+    - hspec

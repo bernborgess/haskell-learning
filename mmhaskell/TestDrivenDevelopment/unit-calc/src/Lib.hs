@@ -7,4 +7,4 @@ someFunc :: IO ()
 someFunc = putStrLn "someFunc"
 
 simpleMathFunction :: Int -> Int -> Int -> Int
-simpleMathFunction = undefined
+simpleMathFunction a b c = a * b - c
