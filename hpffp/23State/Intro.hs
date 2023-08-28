@@ -11,6 +11,8 @@ import qualified Data.DList as DL
 import Data.Functor.Identity (Identity (runIdentity))
 import System.Random
 
+import Game
+
 {-
     In Haskell, if we use the State type and its associated
     Monad, we can have state which:
