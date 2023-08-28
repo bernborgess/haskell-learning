@@ -12,6 +12,7 @@ import Data.Functor.Identity (Identity (runIdentity))
 import System.Random
 
 import Game
+import Tree
 
 {-
     In Haskell, if we use the State type and its associated
