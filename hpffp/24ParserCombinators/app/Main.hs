@@ -11,6 +11,7 @@ import Text.Trifecta (
     char,
     decimal,
     integer,
+    letter,
     parseString,
  )
 
@@ -180,3 +181,25 @@ justInteger = integer >>= (eof >>) . return
 -- Failure (interactive):1:4: error: expected: digit,
 -- end of input
 -- 123abc<EOF>
+
+-- 24.5 Haskell's parsing ecosystem
+
+-- 25.6 Alternative
+
+type NumberOrString = Either Integer String
+
+parseNos :: Parser NumberOrString
+parseNos =
+    (Left <$> integer) <|> (Right <$> some letter)
+
+alternativeTest :: IO ()
+alternativeTest = do
+    let a = "blah"
+        b = "123"
+        c = "123blah789"
+    print $ parseString (some letter) mempty a
+    print $ parseString integer mempty b
+    print $ parseString parseNos mempty a
+    print $ parseString parseNos mempty b
+    print $ parseString (many parseNos) mempty c
+    print $ parseString (some parseNos) mempty c
