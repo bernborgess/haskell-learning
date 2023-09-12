@@ -10,6 +10,7 @@ import Text.Trifecta (
     Parser (..),
     char,
     decimal,
+    integer,
     parseString,
  )
 
@@ -140,3 +141,42 @@ testVirtuous = do
 
 -- Now we have no bottom causing the program to halt and we get a
 -- Failure value which explains the cause for the failure. Much better
+
+-- Intermission: Exercise
+
+-- This should not be unfamiliar at this point, even if
+-- you do not understand all the details:
+
+-- Prelude> parseString integer mempty "123abc"
+-- Success 123
+-- Prelude> parseString (integer >> eof) mempty "123abc"
+-- Failure (interactive):1:4: error: expected: digit,
+-- end of input
+--  123abc<EOF>
+--  ^
+-- Prelude> parseString (integer >> eof) mempty "123"
+-- Success ()
+
+-- You may have already deduced why it returns () as a Success result
+-- here; it’s consumed all the input but there is no result to return from
+-- having done so. The result Success () tells you the parse was
+-- successful and consumed the entire input, so there’s nothing to return.
+-- What we want you to try now is rewriting the final example so it returns
+-- the integer that it parsed instead of Success (). It should return the
+-- integer successfully when it receives an input with an integer followed
+-- by an EOF and fail in all other cases:
+
+justInteger :: Parser Integer
+justInteger = integer >>= (eof >>) . return
+
+-- justInteger = do
+--     i <- integer
+--     eof
+--     return i
+
+-- Prelude> parseString (justInteger) mempty "123"
+-- Success 123
+-- Prelude> parseString (justInteger) mempty "123abc"
+-- Failure (interactive):1:4: error: expected: digit,
+-- end of input
+-- 123abc<EOF>
