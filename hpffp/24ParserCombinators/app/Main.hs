@@ -1,7 +1,17 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
+import Control.Applicative
+import Data.Ratio ((%))
 import Text.Parser.Combinators
-import Text.Trifecta (CharParsing (string), Parser (..), char, parseString)
+import Text.Trifecta (
+    CharParsing (string),
+    Parser (..),
+    char,
+    decimal,
+    parseString,
+ )
 
 stop :: Parser a
 stop = unexpected "stop"
@@ -86,3 +96,47 @@ stringParser (x : xs) = do
     px <- char x
     rx <- stringParser xs
     return (px : rx)
+
+-- 24.4 Parsing fractions
+badFraction = "1/0"
+alsoBad = "10"
+shouldWork = "1/2"
+shouldAlsoWork = "2/1"
+
+parseFraction :: Parser Rational
+parseFraction = do
+    numerator <- decimal
+    char '/'
+    denominator <- decimal
+    return (numerator % denominator)
+
+fracMain :: IO ()
+fracMain = do
+    print $ parseString parseFraction mempty shouldWork
+    print $ parseString parseFraction mempty shouldAlsoWork
+    print $ parseString parseFraction mempty alsoBad
+    print $ parseString parseFraction mempty badFraction
+
+-- the division by 0 halts the whole program
+
+virtuousFraction :: Parser Rational
+virtuousFraction = do
+    numerator <- decimal
+    char '/'
+    denominator <- decimal
+    case denominator of
+        0 -> fail "Denominator cannot be zero"
+        _ -> return (numerator % denominator)
+
+-- ! Here is our first explicit use of fail, which by historical
+-- ! accident is part of the Monad typeclass.
+
+testVirtuous :: IO ()
+testVirtuous = do
+    print $ parseString virtuousFraction mempty badFraction
+    print $ parseString virtuousFraction mempty alsoBad
+    print $ parseString virtuousFraction mempty shouldWork
+    print $ parseString virtuousFraction mempty shouldAlsoWork
+
+-- Now we have no bottom causing the program to halt and we get a
+-- Failure value which explains the cause for the failure. Much better
