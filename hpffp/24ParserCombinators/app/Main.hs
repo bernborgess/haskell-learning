@@ -1,10 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Main where
 
 import Control.Applicative
+import Data.Monoid (Any)
 import Data.Ratio ((%))
 import Text.Parser.Combinators
+import Text.RawString.QQ (r)
 import Text.Trifecta (
     CharParsing (string),
     Parser (..),
@@ -12,6 +15,7 @@ import Text.Trifecta (
     decimal,
     integer,
     letter,
+    oneOf,
     parseString,
  )
 
@@ -203,3 +207,74 @@ alternativeTest = do
     print $ parseString parseNos mempty b
     print $ parseString (many parseNos) mempty c
     print $ parseString (some parseNos) mempty c
+
+-- What we’re taking advantage of here with some, many,
+-- and (<|>) is the Alternative typeclass:
+{-
+class Applicative f => Alternative f where
+    -- The identity of '<|>'
+    empty :: f a
+
+    -- An associative binary operation
+    (<|>) :: f a -> f a -> f a
+
+    -- One or more
+    some :: f a -> f [a]
+    some v = some_v
+      where
+        many_v = some_v <|> pure []
+        some_v = (fmap (:) v) <*> many_v
+
+    -- Zero or more
+    many :: f a -> f [a]
+    many v = many_v
+      where
+        many_v = some_v <|> pure []
+        some_v = (fmap (:) v) <*> many_v
+-}
+
+eitherOr :: String
+eitherOr =
+    [r|
+123
+abc
+456
+def
+|]
+
+-- QuasiQuotes
+-- [r| is beginning of a quasiquoted section
+-- It is defined a follows:
+{-
+r :: QuasiQuoter
+r = QuasiQuoter {
+    -- Extracted from dead-simple-json.
+    quoteExp  = return . LitE . StringL . normaliseNewlines,
+
+    -- error messages elided
+    quotePat  = \_ -> fail "some error message",
+    quoteType = \_ -> fail "some error message",
+    quoteDec  = \_ -> fail "some error message"
+}
+-}
+
+-- ? The idea here is that this is a macro that lets us write
+-- ? arbitrary text inside of the block that begins with
+-- ? [r| and ends with |].
+
+-- Return to Alternative
+
+mainAlt :: IO ()
+mainAlt = do
+    print $ parseString parseNos mempty eitherOr
+
+parseNos' :: Parser NumberOrString
+parseNos' = do
+    skipMany (oneOf "\n")
+    v <- (Left <$> integer) <|> (Right <$> some letter)
+    skipMany (oneOf "\n")
+    return v
+
+mainAltNL :: IO ()
+mainAltNL = do
+    print $ parseString (some parseNos') mempty eitherOr
