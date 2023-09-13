@@ -1,34 +1,60 @@
-data Node a = Node
-    { el :: a
-    , before :: Maybe (Node a)
-    }
-    deriving (Eq, Show)
+import Control.Monad (when)
+import Control.Monad.State (MonadState (state), State, runState)
 
-instance Functor Node where
-    fmap f (Node{el, before}) =
-        Node{el = f el, before = fmap f <$> before}
+type Stack = [Int]
 
-instance Applicative Node where
-    pure a = Node a Nothing
+pop :: State Stack Int
+pop = state fn
+  where
+    fn [] = (0, [])
+    fn (x : xs) = (x, xs)
 
-    (Node{el = ab, before = (Just x)}) <*> (Node{el = a, before = (Just y)}) =
-        Node (ab a) (Just $ x <*> y)
-    (Node{el = ab}) <*> (Node{el = a}) = Node (ab a) Nothing
+push :: Int -> State Stack ()
+push a = state $ \xs -> ((), a : xs)
 
-instance Monad Node where
-    (Node{el, before = Nothing}) >>= anb = anb el
-    (Node{el, before = (Just na)}) >>= anb =
-        let (Node{el = b}) = anb el
-            nb = na >>= anb
-         in Node b (Just nb)
+operating :: State Stack Int
+operating = do
+    push 3
+    push 4
+    pop
+    pop
 
-newtype Stack a = Stack {tip :: Maybe (Node a)}
+stackers :: State Stack ()
+stackers = do
+    a <- pop
+    if a == 5
+        then push 5
+        else do
+            push 3
+            push 8
 
-instance Functor Stack where
-    fmap f (Stack{tip}) = Stack{tip = fmap f <$> tip}
+stackinn :: State Stack ()
+stackinn = do
+    a <- operating
+    when (a == 100) stackers
 
-instance Applicative Stack where
-    pure a = Stack{tip = Just $ pure a}
+main = do
+    print $ (runState operating) []
+    print $ (runState stackers) []
+    print $ (runState stackers) []
+    print $ (runState stackinn) []
 
-    (Stack{tip = (Just nab)}) <*> (Stack{tip = (Just na)}) =
-        Stack (Just $ nab <*> na)
+{-
+main :: IO ()
+main = do
+    let initialStack = Stack []
+
+    let fn = undefined $ do
+            push 1
+            push 2
+            push 3
+            val1 <- top
+            pop
+            val2 <- top
+            let isEmpty = empty
+            return (val1, val2, isEmpty)
+
+    final <- mapM fn initialStack -- :: Int
+    print final
+
+-}
