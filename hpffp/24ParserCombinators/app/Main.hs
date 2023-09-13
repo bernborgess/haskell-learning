@@ -13,6 +13,7 @@ import Text.Trifecta (
     Parser (..),
     char,
     decimal,
+    digit,
     integer,
     letter,
     oneOf,
@@ -278,3 +279,52 @@ parseNos' = do
 mainAltNL :: IO ()
 mainAltNL = do
     print $ parseString (some parseNos') mempty eitherOr
+
+-- Intermission: Exercise
+-- Make a parser, using the existing fraction parser plus a new
+-- ! decimal parser, that can parse either decimals or fractions.
+-- You’ll want to use <|> from Alternative to combine the…alternative
+-- parsers. If you find this too difficult, write a parser that
+-- parses straightforward integers or fractions. Make a datatype
+-- that contains either an integer or a rational and use that
+-- datatype as the result of the parser. Or use Either. Run
+-- free, grasshopper.
+-- ? Hint: we’ve not explained it yet, but you may want to try `try`.
+
+type Decimal = String
+
+badDecimal = "1."
+alsoBadDecimal = "1"
+shouldWorkDecimal = "1.0"
+shouldAlsoWorkDecimal = "3.14"
+
+parseDecimal :: Parser Decimal
+parseDecimal = do
+    s <- some digit
+    char '.'
+    t <- some digit
+    eof
+    return $ s ++ "." ++ t
+
+testDecimal :: IO ()
+testDecimal = do
+    print $ parseString parseDecimal mempty badDecimal
+    print $ parseString parseDecimal mempty alsoBadDecimal
+    print $ parseString parseDecimal mempty shouldWorkDecimal
+    print $ parseString parseDecimal mempty shouldAlsoWorkDecimal
+
+type DecimalOrRational = Either Decimal Rational
+
+parseDor :: Parser DecimalOrRational
+parseDor = (Left <$> try parseDecimal) <|> (Right <$> parseFraction)
+
+testDor :: IO ()
+testDor = do
+    let a = "1.0"
+        b = "1/2"
+        c = "3.14"
+        d = "3.14.0"
+    print $ parseString parseDor mempty a
+    print $ parseString parseDor mempty b
+    print $ parseString parseDor mempty c
+    print $ parseString parseDor mempty d
