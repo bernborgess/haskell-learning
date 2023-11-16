@@ -74,8 +74,6 @@ instance (Monad m) => Monad (IdentityT m) where
     (IdentityT ma) >>= f = IdentityT $ ma >>= runIdentityT . f
 -}
 
---
-
 -- The Monad instance is tricky, so we’re going to do a few things to
 -- break it down. Keep in mind that Monad is where we have to really
 -- use concrete type information from IdentityT in order to make the
@@ -194,12 +192,13 @@ instance (Monad m) => Monad (IdentityT m) where
 -- a Functor. So, we can use runIdentityT to get rid of the IdentityT
 -- structure in the middle of the stack of types:
 
--- Trying to change m (IdentityT m b)
--- into m (m b)
+-- * Trying to change m (IdentityT m b)
+
+-- * into m (m b)
 
 -- Note:
--- runIdentityT :: IdentityT f a -> f a
--- fmap runIdentityT :: Functor f => f (IdentityT f1 a) -> f (f1 a)
+-- ? runIdentityT :: IdentityT f a -> f a
+-- ? fmap runIdentityT :: Functor f => f (IdentityT f1 a) -> f (f1 a)
 
 {-
 instance (Monad m) => Monad (IdentityT m) where
@@ -257,14 +256,14 @@ instance (Monad m) => Monad (IdentityT m) where
 -- undefined. But we know that 𝑎𝑖𝑚𝑏 has the actual type m b, so this
 -- won’t work. Why? If we take a look at the type error:
 
--- Couldn't match type ‘m’ with ‘IdentityT m’
+-- ! Couldn't match type ‘m’ with ‘IdentityT m’
 
 -- The (>>=) we are implementing has a final result of type IdentityT
 -- m b, so the type of 𝑎𝑖𝑚𝑏 doesn’t match it yet. We need to wrap m b in
 -- IdentityT to make it typecheck:
 
 -- Remember:
--- IdentityT :: f a -> IdentityT f a
+-- ? IdentityT :: f a -> IdentityT f a
 
 {-
 instance (Monad m) => Monad (IdentityT m) where
