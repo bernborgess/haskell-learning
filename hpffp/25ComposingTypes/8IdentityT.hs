@@ -322,3 +322,50 @@ instance (Monad m) => Monad (IdentityT m) where
 
 -- 920
 -- ? The essential extra of Monad transformers
+
+-- It may not seem like it, but the IdentityT monad transformer actually
+-- captures the essence of transformers generally
+
+--  We only embarked on this quest because we couldn’t be guaranteed
+--  a Monad instance given the composition of two types
+
+-- Given that, we know having Functor/Applicative/Monad at our disposal isn’t
+-- enough to make that new Monad instance.
+
+-- ? So what was novel in the following code?
+-- (>>=) :: IdentityT m a -> (a -> IdentityT m b) -> IdentityT m b
+-- (IdentityT ma) >>= f = IdentityT $ ma >>= runIdentityT . f
+
+-- Well, it wasn’t the pattern match on IdentityT; we get that from the
+-- Functor anyway:
+-- Not this
+-- (IdentityT ma) ...
+
+-- It wasn’t the ability to (>>=) functions over the ma value of type 𝑚𝑎,
+-- we get that from the Monad constraint on 𝑚 anyway.
+
+-- Not this
+-- ... ma >>= ...
+
+-- We needed to know one of the types concretely so that we could use
+-- runIdentityT (essentially fmapping a fold of the IdentityT structure)
+-- and then repack the value in IdentityT
+
+-- We needed to know IdentityT
+-- concretely to be able to do this
+-- IdentityT .. runIdentityT ...
+
+{-
+   As you’ll recall, until we used runIdentityT we couldn’t get the types
+   to fit because IdentityT was wedged in the middle of two bits of 𝑚. It
+   * turns out to be impossible to fix that using only Functor, Applicative,
+   * and Monad
+-}
+
+-- This is an example of why we can’t just make a Monad
+-- instance for the Compose type, but we can make a transformer type
+-- like IdentityT where we leverage information specific to the type
+-- and combine it with any other type that has a Monad instance.
+
+-- ? In general, in order to make the types fit, we’ll need some way to fold
+-- ? and reconstruct the type we have concrete information for.
