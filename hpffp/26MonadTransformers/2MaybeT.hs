@@ -84,4 +84,28 @@ lmiApply ::
     [Maybe (Identity b)]
 lmiApply f = final' (second' (innerMost f))
 
--- 929
+-- The Applicative instance for our MaybeT type will employ this
+-- same idea, because Applicatives are closed under composition,
+-- as we noted in the last chapter.
+
+-- We only need to do something different from the
+-- Compose instances once we get to Monad.
+
+-- So, we took the long way around to this:
+
+instance (Applicative m) => Applicative (MaybeT m) where
+    pure = MaybeT . pure . pure
+    (MaybeT fab) <*> (MaybeT mma) = MaybeT $ (<*>) <$> fab <*> mma
+
+-- ? MaybeT Monad instance
+
+-- At last, on to the Monad instance!
+-- Note that we’ve given some of the intermediate types:
+
+instance (Monad m) => Monad (MaybeT m) where
+    (>>=) :: MaybeT m a -> (a -> MaybeT m b) -> MaybeT m b
+    (MaybeT ma) >>= f = MaybeT $ do
+        v <- ma
+        case v of
+            Nothing -> return Nothing
+            Just y -> runMaybeT (f y)
