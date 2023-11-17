@@ -72,3 +72,5 @@ instance (Monad m) => Monad (StateT s m) where
   (StateT sma) >>= f = StateT $ \s -> do
     (a, s') <- sma s
     runStateT (f a) s'
+
+-- 935
