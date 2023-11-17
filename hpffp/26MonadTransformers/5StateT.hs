@@ -73,4 +73,69 @@ instance (Monad m) => Monad (StateT s m) where
     (a, s') <- sma s
     runStateT (f a) s'
 
--- 935
+-- ReaderT, WriterT, StateT
+
+-- We'd like to point something out about these three types:
+
+-- ? newtype Reader r a = Reader {runReader :: r -> a}
+
+-- ? newtype Writer w a = Writer {runWriter :: (a, w)}
+
+-- ? newtype State s a = State {runState :: s -> (a, s)}
+
+-- and their transformer variantes:
+
+-- ? newtype ReaderT r m a = ReaderT {runReaderT :: r -> m a}
+
+-- ? newtype WriterT w m a = WriterT {runWriterT :: m (a, w)}
+
+-- ? newtype StateT s m a = StateT {runStateT :: s -> m (a, s)}
+
+-- You're already familiar with Reader and State.
+-- We haven't shown you Writer or WriterT up to this point because,
+-- quite frankly, you shouldn't use it.
+
+-- We'll explain why not in a section later in this chapter.
+
+-- For the purposes of the progression we're trying to demonstrate here,
+-- it suffices to know that the Writer Applicative and Monad work by
+-- combining the w values monoidally.
+
+-- ? With that in mind, what we can see it that Reader lets us talk about
+-- ? values we need, Writer lets us deal with values we can emit and combine
+-- ? (but not read), and State lets us both read and write values in any
+-- ? manner we desire -- including monoidally, like Writer.
+
+-- This is one reason you needn't bother with Writer since State can replace
+-- it anyway. Now you know why you don't need Writer; we'll talk more about why
+-- you don't want Writer later.
+
+-- In fact, there is a type in the transformers library that combines
+-- Reader, Writer and State into one big type:
+{-
+newtype RWST r w s m a = RWST
+  {runRWST :: r -> s -> m (a, s, w)}
+-}
+
+-- Because of the Writer component, you probably wouldn't want to use that
+-- in most applications either, but it's good to know it exists.
+
+-- ? Correspondence between StateT and Parser
+
+-- You may recall what a simple parser type looks like:
+
+-- * type Parser a = String -> Maybe (a, String)
+
+-- You may remember our discussion about the similarities between parsers
+-- and State in the Parsers chapter.
+
+-- Now, we could choose to define a Parser type in the following manner:
+
+{-
+newtype StateT s m a = StateT
+  {runStateT :: s -> m (a, s)}
+-}
+-- type Parser = StateT String Maybe
+
+-- Nobody does this in practice, but it's useful to consider the similarity
+-- to get a feel for what StateT is all about.
