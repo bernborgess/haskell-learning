@@ -1,31 +1,3 @@
-
-# for haskell compiled code
-*.exe
-*.hi
-*.o
-*.outdist
-dist-*
-cabal-dev
-*.o
-*.hi
-*.hie
-*.chi
-*.chs.h
-*.dyn_o
-*.dyn_hi
-.hpc
-.hsenv
-.cabal-sandbox/
-cabal.sandbox.config
-*.prof
-*.aux
-*.hp
-*.eventlog
-.stack-work/
-cabal.project.local
-cabal.project.local~
-.HTF/
-.ghc.environment.*
 dist
 dist-*
 cabal-dev
@@ -49,42 +21,8 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# VS CODE
-.vscode/
-*.swp
-
-*.wav
+.vscode
 *.pdf
+*.swp
+*.exe
