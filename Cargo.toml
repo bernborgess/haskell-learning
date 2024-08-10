@@ -1,4 +1,4 @@
 
 [workspace]
 resolver = "2"
-members = ["dmoj/rock-paper-scissors", "dmoj/rock-paper-scissors"]
+members = [ "dmoj/koala","dmoj/rock-paper-scissors", "dmoj/rock-paper-scissors"]
