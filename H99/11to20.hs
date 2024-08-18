@@ -95,3 +95,90 @@ encodeDirect = encodeModified
 dupli :: [a] -> [a]
 dupli (x : xs) = x : x : dupli xs
 dupli [] = []
+
+-- Problem 15
+-- (**) Replicate the elements of a list a given number of times.
+
+-- λ> repli "abc" 3
+-- "aaabbbccc"
+
+repli :: String -> Int -> String
+-- repli [] n = []
+-- repli (x : xs) n = replicate n x ++ repli xs n
+repli s n = concatMap (replicate n) s
+
+-- Problem 16
+-- (**) Drop every N'th element from a list. Solutions
+
+-- Example in Haskell:
+
+-- λ> dropEvery "abcdefghik" 3
+-- "abdeghk"
+
+dropEvery :: String -> Int -> String
+dropEvery s n = go n s
+  where
+    go _ [] = []
+    go 1 (x : xs) = go n xs
+    go i (x : xs) = x : go (i - 1) xs
+
+-- Problem 17
+-- (*) Split a list into two parts; the length of the first part is given. Solutions
+
+-- Do not use any predefined predicates.
+-- Example in Haskell:
+
+-- λ> split "abcdefghik" 3
+-- ("abc", "defghik")
+
+split :: String -> Int -> (String, String)
+split s n = solve n ("", s)
+  where
+    solve _ (h, []) = (h, [])
+    solve 0 (h, t) = (h, t)
+    solve i (h, x : xs) = solve (i - 1) (h ++ [x], xs)
+
+-- Problem 18
+-- (**) Extract a slice from a list.
+
+-- Given two indices, i and k, the slice is the list containing the elements
+-- between the i'th and k'th element of the original list (both limits included).
+-- Start counting the elements with 1.
+
+-- Example in Haskell:
+
+-- λ> slice ['a','b','c','d','e','f','g','h','i','k'] 3 7
+-- "cdefg"
+
+slice :: String -> Int -> Int -> String
+slice s i k = take (k - i + 1) $ drop (i - 1) s
+
+-- Problem 19
+-- (**) Rotate a list N places to the left. Solutions
+
+-- Hint: Use the predefined functions length and (++).
+
+-- Examples in Haskell:
+
+-- λ> rotate ['a','b','c','d','e','f','g','h'] 3
+-- "defghabc"
+
+-- λ> rotate ['a','b','c','d','e','f','g','h'] (-2)
+-- "ghabcdef"
+
+rotate :: String -> Int -> String
+rotate s i = drop r s ++ take r s
+  where
+    r = i `mod` length s
+
+-- Problem 20
+-- (*) Remove the K'th element from a list.
+-- Example in Haskell:
+
+-- λ> removeAt 2 "abcd"
+-- ('b',"acd")
+
+removeAt :: Int -> String -> (Char, String)
+removeAt k s = (h, t ++ d)
+  where
+    (t, h : d) = splitAt k s
