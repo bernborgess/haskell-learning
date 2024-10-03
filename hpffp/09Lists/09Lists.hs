@@ -4,7 +4,7 @@ import Data.Char
 -- provided. Do not use ranges syntax to do so. It should
 -- return the same results as if you did [start..stop]
 
-enumFrom2 :: Enum a => a -> a -> [a]
+enumFrom2 :: (Enum a) => a -> a -> [a]
 enumFrom2 start stop
   | fromEnum start > fromEnum stop = []
   | otherwise = start : enumFrom2 (succ start) stop
@@ -13,14 +13,14 @@ enumFrom2 start stop
 -- => [1,2,3]
 
 -- checks if my `enumFrom2` function is behaving like builtin [start..stop]
-check :: Enum a => a -> a -> Bool
+check :: (Enum a) => a -> a -> Bool
 check start stop = map fromEnum [start .. stop] == map fromEnum (enumFrom2 start stop)
 
 -- iterates every pair in range to apply the check
-verifyRange :: Enum a => a -> a -> Bool
+verifyRange :: (Enum a) => a -> a -> Bool
 verifyRange l r = all (uncurry check) xys
- where
-  xys = [(x, y) | x <- [l .. r], y <- [l .. r]]
+  where
+    xys = [(x, y) | x <- [l .. r], y <- [l .. r]]
 
 -- =========================================================================
 -- Intermission Exercises
@@ -71,10 +71,10 @@ myLines text =
    in fstl : myLines rest
 
 shouldEqual =
-  [ "Type Tyger, burning bright"
-  , "In the forests of the night"
-  , "What immortal hand or eye"
-  , "Could frame thy fearful symmetry?"
+  [ "Type Tyger, burning bright",
+    "In the forests of the night",
+    "What immortal hand or eye",
+    "Could frame thy fearful symmetry?"
   ]
 
 main :: IO ()
@@ -371,11 +371,11 @@ bighead = toUpper . head
 -- Writing your own standard functions
 -- 3. After you write the recursive myElem, write
 -- another version that uses any.
-myElem :: Eq a => a -> [a] -> Bool
+myElem :: (Eq a) => a -> [a] -> Bool
 myElem _ [] = False
 myElem e (x : xs) = e == x || myElem e xs
 
-myElem' :: Eq a => a -> [a] -> Bool
+myElem' :: (Eq a) => a -> [a] -> Bool
 myElem' e = any (== e)
 
 -- 4. Implement myReverse
@@ -408,8 +408,8 @@ myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
 myMaximumBy _ [] = error "empty list has no max"
 myMaximumBy _ [x] = x
 myMaximumBy f (x : y : xs) = myMaximumBy f (g : xs)
- where
-  g = if f x y == GT then x else y
+  where
+    g = if f x y == GT then x else y
 
 -- 9. myMinimumBy takes a comparison function and a list
 -- and returns the least element of the list based on
@@ -418,8 +418,8 @@ myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
 myMinimumBy _ [] = error "empty list has no min"
 myMinimumBy _ [x] = x
 myMinimumBy f (x : y : xs) = myMinimumBy f (m : xs)
- where
-  m = if f x y == LT then x else y
+  where
+    m = if f x y == LT then x else y
 
 -- Using the myMinimumBy and myMaximumBy functions,
 -- write your own versions of maximum and minimum.
