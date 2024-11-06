@@ -14,6 +14,8 @@ test = do
   assert 2 $ buildSeq 2 == [1, 2, 2]
   assert 3 $ buildSeq 3 == [1, 2, 2, 3, 3, 3]
 
+f = 3 3
+
 range :: Int -> Int -> [Int]
 range = enumFromTo
 
